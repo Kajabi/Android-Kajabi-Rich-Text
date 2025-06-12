@@ -9,7 +9,7 @@ import com.mohamedrejeb.richeditor.sample.common.htmleditor.HtmlEditorContent
 import com.mohamedrejeb.richeditor.sample.common.markdowneditor.MarkdownEditorContent
 import com.mohamedrejeb.richeditor.sample.common.richeditor.RichEditorScreen
 import com.mohamedrejeb.richeditor.sample.common.slack.SlackDemoScreen
-import com.kjcommunities.SlackDemoScreen as KjCommunitiesSlackDemoScreen
+import com.kjcommunities.KJDemoScreen as KjCommunitiesKJDemoScreen
 
 private const val HOME_ROUTE = "home"
 private const val RICH_EDITOR_ROUTE = "richEditor"
@@ -61,7 +61,7 @@ fun NavGraph() {
         }
 
         composable(KJCOMMUNITIES_SLACK_ROUTE) {
-            KjCommunitiesSlackDemoScreen(
+            KjCommunitiesKJDemoScreen(
                 navigateBack = { navController.popBackStack() }
             )
         }

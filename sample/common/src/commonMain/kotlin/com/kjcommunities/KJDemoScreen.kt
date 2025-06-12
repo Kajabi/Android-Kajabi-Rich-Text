@@ -36,7 +36,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalRichTextApi::class, ExperimentalResourceApi::class)
 @Composable
-fun SlackDemoScreen(
+fun KJDemoScreen(
     navigateBack: () -> Unit
 ) {
     val richTextState = rememberRichTextState()
@@ -155,7 +155,7 @@ fun SlackDemoScreen(
                             .background(Color(0xFF222528))
                             .border(1.dp, Color(0xFFCBCCCD), RoundedCornerShape(10.dp))
                     ) {
-                        SlackDemoPanel(
+                        KJDemoPanel(
                             state = richTextState,
                             openLinkDialog = openLinkDialog,
                             modifier = Modifier
@@ -218,7 +218,7 @@ fun SlackDemoScreen(
                             openLinkDialog.value = false
                         }
                     ) {
-                        SlackDemoLinkDialog(
+                        KJDemoLinkDialog(
                             state = richTextState,
                             openLinkDialog = openLinkDialog
                         )

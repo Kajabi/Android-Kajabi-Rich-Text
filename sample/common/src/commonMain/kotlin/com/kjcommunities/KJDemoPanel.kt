@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
 
 @Composable
-fun SlackDemoPanel(
+fun KJDemoPanel(
     state: RichTextState,
     openLinkDialog: MutableState<Boolean>,
     modifier: Modifier = Modifier,
@@ -41,7 +41,7 @@ fun SlackDemoPanel(
         // Text alignment buttons removed - not supported in Lexical format
         /*
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.addParagraphStyle(
                         ParagraphStyle(
@@ -55,7 +55,7 @@ fun SlackDemoPanel(
         }
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.addParagraphStyle(
                         ParagraphStyle(
@@ -69,7 +69,7 @@ fun SlackDemoPanel(
         }
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.addParagraphStyle(
                         ParagraphStyle(
@@ -93,7 +93,7 @@ fun SlackDemoPanel(
         */
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.toggleSpanStyle(
                         SpanStyle(
@@ -107,7 +107,7 @@ fun SlackDemoPanel(
         }
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.toggleSpanStyle(
                         SpanStyle(
@@ -121,7 +121,7 @@ fun SlackDemoPanel(
         }
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.toggleSpanStyle(
                         SpanStyle(
@@ -135,7 +135,7 @@ fun SlackDemoPanel(
         }
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.toggleSpanStyle(
                         SpanStyle(
@@ -158,7 +158,7 @@ fun SlackDemoPanel(
         }
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     openLinkDialog.value = true
                 },
@@ -179,7 +179,7 @@ fun SlackDemoPanel(
         // Custom font size button removed - not supported in Lexical format
         /*
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.toggleSpanStyle(
                         SpanStyle(
@@ -196,7 +196,7 @@ fun SlackDemoPanel(
         // Text color button removed - not supported in Lexical format
         /*
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.toggleSpanStyle(
                         SpanStyle(
@@ -214,7 +214,7 @@ fun SlackDemoPanel(
         // Background color button removed - not supported in Lexical format
         /*
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.toggleSpanStyle(
                         SpanStyle(
@@ -239,7 +239,7 @@ fun SlackDemoPanel(
         */
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.toggleUnorderedList()
                 },
@@ -249,7 +249,7 @@ fun SlackDemoPanel(
         }
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.toggleOrderedList()
                 },
@@ -259,7 +259,7 @@ fun SlackDemoPanel(
         }
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.increaseListLevel()
                 },
@@ -269,7 +269,7 @@ fun SlackDemoPanel(
         }
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.decreaseListLevel()
                 },
@@ -290,7 +290,7 @@ fun SlackDemoPanel(
         }
 
         item {
-            SlackDemoPanelButton(
+            KJDemoPanelButton(
                 onClick = {
                     state.toggleCodeSpan()
                 },

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
 
 @Composable
-fun SlackDemoLinkDialog(
+fun KJDemoLinkDialog(
     state: RichTextState,
     openLinkDialog: MutableState<Boolean>,
 ) {
