@@ -19,6 +19,7 @@ fun HomeScreen(
     navigateToHtmlEditor: () -> Unit,
     navigateToMarkdownEditor: () -> Unit,
     navigateToSlack: () -> Unit,
+    navigateToKjCommunitiesSlack: () -> Unit,
 ) {
     val richTextState = rememberRichTextState()
 
@@ -91,6 +92,14 @@ fun HomeScreen(
                     onClick = navigateToSlack,
                 ) {
                     Text("Slack Clone Demo")
+                }
+            }
+
+            item {
+                Button(
+                    onClick = navigateToKjCommunitiesSlack,
+                ) {
+                    Text("KJ Communities Demo")
                 }
             }
         }
