@@ -11,13 +11,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.Send
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -40,6 +43,7 @@ fun KJDemoScreen(
     navigateBack: () -> Unit
 ) {
     val richTextState = rememberRichTextState()
+    val clipboardManager = LocalClipboardManager.current
 
     val messages = remember {
         mutableStateListOf<RichTextState>()
@@ -129,11 +133,38 @@ fun KJDemoScreen(
                                         .weight(1f)
                                         .padding(start = 12.dp)
                                 ) {
-                                    Text(
-                                        text = "Mohamed Rejeb",
-                                        color = Color.White,
-                                        fontWeight = FontWeight.Bold
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Text(
+                                            text = "Mohamed Rejeb",
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        
+                                        // Download/Copy Lexical JSON button
+                                        IconButton(
+                                            onClick = {
+                                                try {
+                                                    val lexicalJson = message.getLexicalText()
+                                                    clipboardManager.setText(AnnotatedString(lexicalJson))
+                                                    // TODO: Could add a toast/snackbar here to show success
+                                                } catch (e: Exception) {
+                                                    println("Error copying Lexical JSON: ${e.message}")
+                                                }
+                                            },
+                                            modifier = Modifier.size(24.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Outlined.Download,
+                                                contentDescription = "Copy Lexical JSON",
+                                                tint = Color(0xFFCBCCCD),
+                                                modifier = Modifier.size(16.dp)
+                                            )
+                                        }
+                                    }
                                     Spacer(Modifier.height(4.dp))
                                     RichText(
                                         state = message,
