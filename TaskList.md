@@ -621,7 +621,7 @@ This is the JSON text pretty printed with the escaped characters removed for ref
 ```
 The Lexical SDK should be able to provide the developer either of these texts 
 
-## Task 2: Hide non-lexical supported Rich Text in a Sample Application
+## [x] DONE: Task 2: Hide non-lexical supported Rich Text in a Sample Application
 
 I have copied the files within the "com.mohamedrejeb.richeditor.sample.common.slack" directory into the "com.kjcommunities" directory and the goal is to first fix and then augment these classes. 
 

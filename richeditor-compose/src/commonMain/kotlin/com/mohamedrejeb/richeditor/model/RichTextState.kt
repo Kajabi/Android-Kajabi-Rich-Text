@@ -33,6 +33,8 @@ import com.mohamedrejeb.richeditor.paragraph.type.*
 import com.mohamedrejeb.richeditor.paragraph.type.ParagraphType.Companion.startText
 import com.mohamedrejeb.richeditor.parser.html.RichTextStateHtmlParser
 import com.mohamedrejeb.richeditor.parser.markdown.RichTextStateMarkdownParser
+import com.mohamedrejeb.richeditor.parser.lexical.RichTextStateLexicalParser
+import com.mohamedrejeb.richeditor.parser.lexical.LexicalRoot
 import com.mohamedrejeb.richeditor.utils.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -4058,6 +4060,44 @@ public class RichTextState internal constructor(
      */
     public fun toMarkdown(): String {
         return RichTextStateMarkdownParser.decode(this)
+    }
+
+    /**
+     * Decodes the [RichTextState] to a Lexical JSON string.
+     * Features not supported by Lexical format are converted to normal text.
+     *
+     * @return The Lexical JSON string.
+     */
+    public fun getLexicalText(): String {
+        return RichTextStateLexicalParser.decode(this)
+    }
+
+    /**
+     * Decodes the [RichTextState] to a Lexical data structure.
+     * Features not supported by Lexical format are converted to normal text.
+     *
+     * @return The LexicalRoot data structure.
+     */
+    public fun getLexicalData(): LexicalRoot {
+        return try {
+            RichTextStateLexicalParser.convertRichTextStateToLexical(this)
+        } catch (e: Exception) {
+            // Log.d would be used on Android platform
+            println("Error converting RichTextState to Lexical data: ${e.message}")
+            e.printStackTrace()
+            // Return basic structure on error
+            LexicalRoot(
+                root = com.mohamedrejeb.richeditor.parser.lexical.LexicalRootNode(
+                    children = listOf(
+                        com.mohamedrejeb.richeditor.parser.lexical.LexicalParagraphNode(
+                            children = listOf(
+                                com.mohamedrejeb.richeditor.parser.lexical.LexicalTextNode(text = this.annotatedString.text)
+                            )
+                        )
+                    )
+                )
+            )
+        }
     }
 
     /**
