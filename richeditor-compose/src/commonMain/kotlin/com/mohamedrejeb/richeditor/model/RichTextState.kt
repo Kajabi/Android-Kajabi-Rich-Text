@@ -43,6 +43,8 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.reflect.KClass
+import com.mohamedrejeb.richeditor.parser.utils.H1SpanStyle
+import com.mohamedrejeb.richeditor.parser.utils.H2SpanStyle
 
 @Composable
 public fun rememberRichTextState(): RichTextState {
@@ -218,6 +220,12 @@ public class RichTextState internal constructor(
     public var canIncreaseListLevel: Boolean by mutableStateOf(false)
         private set
     public var canDecreaseListLevel: Boolean by mutableStateOf(false)
+        private set
+
+    // Heading states
+    public var isH1: Boolean by mutableStateOf(false)
+        private set
+    public var isH2: Boolean by mutableStateOf(false)
         private set
 
     public val config: RichTextConfig = RichTextConfig(
@@ -3210,6 +3218,7 @@ public class RichTextState internal constructor(
             isList = isUnorderedList || isOrderedList
             canIncreaseListLevel = richParagraph?.let { canIncreaseListLevel(listOf(it)) } == true
             canDecreaseListLevel = richParagraph?.let { canDecreaseListLevel(listOf(it)) } == true
+            updateHeadingStates()
         } else {
             val richParagraphList = getRichParagraphListByTextRange(selection)
 
@@ -3225,6 +3234,7 @@ public class RichTextState internal constructor(
             isList = richParagraphList.all { it.type is UnorderedList || it.type is OrderedList }
             canIncreaseListLevel = canIncreaseListLevel(richParagraphList)
             canDecreaseListLevel = canDecreaseListLevel(richParagraphList)
+            updateHeadingStates()
         }
     }
 
@@ -4151,5 +4161,58 @@ public class RichTextState internal constructor(
         } catch (e: Exception) {
             this
         }
+    }
+
+    /**
+     * Toggles H1 heading style for the current selection or paragraph.
+     */
+    public fun toggleH1() {
+        val h1Style = H1SpanStyle
+        
+        if (isH1) {
+            // Remove H1 style
+            toggleSpanStyle(h1Style)
+        } else {
+            // Remove any existing heading style first
+            if (isH2) {
+                toggleSpanStyle(H2SpanStyle)
+            }
+            // Apply H1 style
+            toggleSpanStyle(h1Style)
+        }
+        
+        updateHeadingStates()
+    }
+
+    /**
+     * Toggles H2 heading style for the current selection or paragraph.
+     */
+    public fun toggleH2() {
+        val h2Style = H2SpanStyle
+        
+        if (isH2) {
+            // Remove H2 style
+            toggleSpanStyle(h2Style)
+        } else {
+            // Remove any existing heading style first
+            if (isH1) {
+                toggleSpanStyle(H1SpanStyle)
+            }
+            // Apply H2 style
+            toggleSpanStyle(h2Style)
+        }
+        
+        updateHeadingStates()
+    }
+
+    /**
+     * Updates the heading state flags based on current span style.
+     */
+    private fun updateHeadingStates() {
+        val currentStyle = currentSpanStyle
+        isH1 = currentStyle.fontSize == H1SpanStyle.fontSize && 
+               currentStyle.fontWeight == H1SpanStyle.fontWeight
+        isH2 = currentStyle.fontSize == H2SpanStyle.fontSize && 
+               currentStyle.fontWeight == H2SpanStyle.fontWeight
     }
 }

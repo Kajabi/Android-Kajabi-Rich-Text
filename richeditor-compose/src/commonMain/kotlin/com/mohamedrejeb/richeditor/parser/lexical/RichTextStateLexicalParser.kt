@@ -11,6 +11,8 @@ import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.paragraph.RichParagraph
 import com.mohamedrejeb.richeditor.paragraph.type.*
 import com.mohamedrejeb.richeditor.parser.RichTextStateParser
+import com.mohamedrejeb.richeditor.parser.utils.H1SpanStyle
+import com.mohamedrejeb.richeditor.parser.utils.H2SpanStyle
 import androidx.compose.ui.util.fastForEach
 
 internal object RichTextStateLexicalParser : RichTextStateParser<String> {
@@ -309,9 +311,24 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             }
             
             is LexicalHeadingNode -> {
-                // Convert headings to normal paragraphs (unsupported feature)
+                // Convert headings to styled paragraphs
                 val richParagraph = RichParagraph()
-                richParagraph.children.addAll(convertLexicalNodesToRichSpans(node.children, richParagraph))
+                val spans = convertLexicalNodesToRichSpans(node.children, richParagraph)
+                
+                // Apply heading styles to all spans
+                val headingStyle = when (node.tag) {
+                    "h1" -> H1SpanStyle
+                    "h2" -> H2SpanStyle
+                    else -> null
+                }
+                
+                if (headingStyle != null) {
+                    spans.forEach { span ->
+                        span.spanStyle = span.spanStyle.merge(headingStyle)
+                    }
+                }
+                
+                richParagraph.children.addAll(spans)
                 listOf(richParagraph)
             }
             
@@ -802,9 +819,20 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
     @OptIn(ExperimentalRichTextApi::class)
     private fun detectHeadingTag(paragraph: RichParagraph): String? {
         return try {
-            // TODO: Implement heading detection logic
-            // For now, return null as headings aren't in the current toolbar
-            null
+            // Check if the first non-empty span has heading style
+            val firstSpan = paragraph.getFirstNonEmptyChild()
+            firstSpan?.let { span ->
+                val spanStyle = span.spanStyle
+                when {
+                    spanStyle.fontSize == H1SpanStyle.fontSize && 
+                    spanStyle.fontWeight == H1SpanStyle.fontWeight -> "h1"
+                    
+                    spanStyle.fontSize == H2SpanStyle.fontSize && 
+                    spanStyle.fontWeight == H2SpanStyle.fontWeight -> "h2"
+                    
+                    else -> null
+                }
+            }
         } catch (e: Exception) {
             // Handle error
             null

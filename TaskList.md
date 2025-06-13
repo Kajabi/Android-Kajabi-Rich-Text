@@ -5,6 +5,38 @@ The main purpose of this doc is to outline the changes needed for this library s
 We need a function added "getLexicalText()" to all custom display views that can display Rich Text.
 The purpose of this function is that it will return a string in a very specific format as outlined below. 
 
+## [x] DONE: H1 and H2 Heading Support Added
+
+### Overview
+Successfully implemented H1 and H2 heading support in the rich text editor library. This includes:
+
+1. **UI Controls**: Added H1 and H2 buttons to the KJ Demo Panel with proper icons and state management
+2. **RichTextState Methods**: Added `toggleH1()` and `toggleH2()` methods to the RichTextState class
+3. **State Management**: Added `isH1` and `isH2` properties to track current heading state
+4. **Lexical Integration**: Updated the Lexical parser to properly handle heading nodes both:
+   - Converting from Lexical JSON to RichTextState (applying proper H1/H2 styles)
+   - Converting from RichTextState to Lexical JSON (detecting H1/H2 styles and creating heading nodes)
+5. **Heading Detection**: Implemented the `detectHeadingTag()` function to properly identify H1 and H2 styles
+
+### Changes Made
+- **RichTextState.kt**: Added heading toggle methods and state tracking
+- **RichTextStateLexicalParser.kt**: Enhanced to properly handle heading nodes and detect heading styles
+- **KJDemoPanel.kt**: Added H1 and H2 buttons to the UI toolbar
+- **LexicalNode.kt**: Already had proper LexicalHeadingNode structure
+- **ElementsSpanStyle.kt**: Already had H1SpanStyle and H2SpanStyle defined
+
+### Functionality
+- **H1 Button**: Toggles large heading style (2.em font size, bold weight)
+- **H2 Button**: Toggles medium heading style (1.5.em font size, bold weight)
+- **Mutually Exclusive**: Selecting H1 removes H2 and vice versa
+- **Lexical Compatibility**: Properly converts to/from Lexical JSON format with correct "heading" type and "h1"/"h2" tags
+- **State Persistence**: Heading state is properly tracked and updated on selection changes
+
+### Testing
+- Application builds successfully for Android platform
+- Heading buttons are visible in the KJ Demo toolbar
+- No compilation errors or runtime issues
+
 ## Rich Text & Lexical Rich Text examples
 
 Please see ![this screenshot](images/rich_text_base_reference.png) as a base reference point for how the rich text will display when on a web browser when we send it to our server in the Lexical Data text format. 
