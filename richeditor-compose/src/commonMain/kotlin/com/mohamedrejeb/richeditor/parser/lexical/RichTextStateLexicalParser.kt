@@ -17,18 +17,8 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
 
     @OptIn(ExperimentalRichTextApi::class)
     override fun encode(input: String): RichTextState {
-        // Parse the JSON and convert to RichTextState
-        // If there's an error, it will be caught by the caller
-        println("🔄 LexicalParser.encode: Starting with input length ${input.length}")
-        println("🔄 LexicalParser.encode: Input preview: ${input.take(100)}...")
-        
         val lexicalRoot = parseLexicalJsonToRoot(input)
-        println("🔄 LexicalParser.encode: Parsed root with ${lexicalRoot.root.children.size} children")
-        
-        val result = convertLexicalToRichTextState(lexicalRoot)
-        println("🔄 LexicalParser.encode: Converted to RichTextState with text length ${result.annotatedString.text.length}")
-        
-        return result
+        return convertLexicalToRichTextState(lexicalRoot)
     }
 
     @OptIn(ExperimentalRichTextApi::class)
@@ -37,10 +27,6 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             val lexicalRoot = convertRichTextStateToLexical(richTextState)
             serializeLexicalRootToJson(lexicalRoot)
         } catch (e: Exception) {
-            // Log.d would be used on Android platform
-            println("Error converting RichTextState to Lexical: ${e.message}")
-            e.printStackTrace()
-            // Return basic structure on error
             createBasicLexicalJson(richTextState.annotatedString.text)
         }
     }
@@ -50,39 +36,26 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
      */
     private fun parseLexicalJsonToRoot(jsonString: String): LexicalRoot {
         return try {
-            println("🔍 parseLexicalJsonToRoot: Starting parse")
-            // Simple JSON parsing - find the root object
             val trimmed = jsonString.trim()
-            println("🔍 Trimmed length: ${trimmed.length}")
             if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
                 throw IllegalArgumentException("Invalid JSON format")
             }
 
-            // Extract the "root" field
             val rootStart = trimmed.indexOf("\"root\":")
-            println("🔍 Root field found at position: $rootStart")
             if (rootStart == -1) {
                 throw IllegalArgumentException("No root field found")
             }
 
-            // Find the root object boundaries
             val rootValueStart = trimmed.indexOf("{", rootStart)
-            println("🔍 Root object starts at position: $rootValueStart")
             if (rootValueStart == -1) {
                 throw IllegalArgumentException("Root field is not an object")
             }
 
             val rootJson = extractJsonObject(trimmed, rootValueStart)
-            println("🔍 Extracted root JSON length: ${rootJson.length}")
-            println("🔍 Root JSON preview: ${rootJson.take(200)}...")
-            
             val rootNode = parseRootNode(rootJson)
-            println("🔍 Parsed root node with ${rootNode.children.size} children")
             
             LexicalRoot(root = rootNode)
         } catch (e: Exception) {
-            println("🔍 ❌ Error parsing Lexical JSON: ${e.message}")
-            e.printStackTrace()
             throw e
         }
     }
@@ -117,33 +90,24 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
      * Parses an array of child nodes
      */
     private fun parseChildrenArray(arrayJson: String): List<LexicalNode> {
-        println("🧩 parseChildrenArray: Starting with array length ${arrayJson.length}")
         val children = mutableListOf<LexicalNode>()
         
         try {
             val objects = extractJsonObjectsFromArray(arrayJson)
-            println("🧩 Extracted ${objects.size} objects from array")
             objects.forEach { objectJson ->
                 try {
-                    println("🧩 Parsing object: ${objectJson.take(100)}...")
                     val node = parseNodeFromJson(objectJson)
                     if (node != null) {
-                        println("🧩 Successfully parsed node: ${node::class.simpleName}")
                         children.add(node)
-                    } else {
-                        println("🧩 ⚠️ parseNodeFromJson returned null")
                     }
                 } catch (e: Exception) {
-                    println("🧩 ❌ Error parsing child node: ${e.message}")
-                    e.printStackTrace()
+                    // Skip invalid nodes
                 }
             }
         } catch (e: Exception) {
-            println("🧩 ❌ Error parsing children array: ${e.message}")
-            e.printStackTrace()
+            // Return empty list on error
         }
         
-        println("🧩 parseChildrenArray: Returning ${children.size} children")
         return children
     }
 
@@ -152,49 +116,18 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
      */
     private fun parseNodeFromJson(jsonString: String): LexicalNode? {
         return try {
-            println("🎯 parseNodeFromJson: Input length ${jsonString.length}")
-            println("🎯 parseNodeFromJson: Input preview: ${jsonString.take(200)}")
+            val type = extractStringField(jsonString, "type") ?: return null
             
-            val type = extractStringField(jsonString, "type")
-            println("🎯 parseNodeFromJson: Extracted type = '$type'")
-            if (type == null) return null
-            
-            val result = when (type) {
-                "text" -> {
-                    println("🎯 parseNodeFromJson: Creating text node")
-                    parseTextNode(jsonString)
-                }
-                "paragraph" -> {
-                    println("🎯 parseNodeFromJson: Creating paragraph node")
-                    parseParagraphNode(jsonString)
-                }
-                "heading" -> {
-                    println("🎯 parseNodeFromJson: Creating heading node")
-                    parseHeadingNode(jsonString)
-                }
-                "link" -> {
-                    println("🎯 parseNodeFromJson: Creating link node")
-                    parseLinkNode(jsonString)
-                }
-                "list" -> {
-                    println("🎯 parseNodeFromJson: Creating list node")
-                    parseListNode(jsonString)
-                }
-                "listitem" -> {
-                    println("🎯 parseNodeFromJson: Creating listitem node")
-                    parseListItemNode(jsonString)
-                }
-                else -> {
-                    println("🎯 ❌ parseNodeFromJson: Unknown node type: $type")
-                    null
-                }
+            when (type) {
+                "text" -> parseTextNode(jsonString)
+                "paragraph" -> parseParagraphNode(jsonString)
+                "heading" -> parseHeadingNode(jsonString)
+                "link" -> parseLinkNode(jsonString)
+                "list" -> parseListNode(jsonString)
+                "listitem" -> parseListItemNode(jsonString)
+                else -> null
             }
-            
-            println("🎯 parseNodeFromJson: Result = ${result?.let { it::class.simpleName } ?: "null"}")
-            result
         } catch (e: Exception) {
-            println("🎯 ❌ parseNodeFromJson: Error parsing node: ${e.message}")
-            e.printStackTrace()
             null
         }
     }
@@ -337,43 +270,29 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
      */
     @OptIn(ExperimentalRichTextApi::class)
     private fun convertLexicalToRichTextState(lexicalRoot: LexicalRoot): RichTextState {
-        println("🔧 convertLexicalToRichTextState: Starting conversion")
         val richTextState = RichTextState()
         val richParagraphs = mutableListOf<RichParagraph>()
         
         try {
-            println("🔧 Processing ${lexicalRoot.root.children.size} root children")
             lexicalRoot.root.children.fastForEach { node ->
                 try {
-                    println("🔧 Converting node type: ${node::class.simpleName}")
                     val paragraphs = convertLexicalNodeToRichParagraph(node)
-                    println("🔧 Node converted to ${paragraphs.size} paragraphs")
                     richParagraphs.addAll(paragraphs)
                 } catch (e: Exception) {
-                    println("🔧 ❌ Error converting node to RichParagraph: ${e.message}")
-                    e.printStackTrace()
-                    // Add fallback paragraph with just text
                     richParagraphs.add(RichParagraph())
                 }
             }
         } catch (e: Exception) {
-            println("🔧 ❌ Error converting Lexical to RichTextState: ${e.message}")
-            e.printStackTrace()
+            // Handle error
         }
 
-        println("🔧 Total paragraphs created: ${richParagraphs.size}")
-
-        // Ensure we have at least one paragraph
         if (richParagraphs.isEmpty()) {
-            println("🔧 No paragraphs created, adding empty paragraph")
             richParagraphs.add(RichParagraph())
         }
 
-        // Set the paragraphs
         richTextState.richParagraphList.clear()
         richTextState.richParagraphList.addAll(richParagraphs)
         
-        println("🔧 Final RichTextState text preview: ${richTextState.annotatedString.text.take(100)}")
         return richTextState
     }
 
@@ -398,17 +317,46 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             
             is LexicalListNode -> {
                 val paragraphs = mutableListOf<RichParagraph>()
-                node.children.fastForEach { listItem ->
-                    if (listItem is LexicalListItemNode) {
-                        val richParagraph = RichParagraph()
-                        richParagraph.type = when (node.listType) {
-                            "number" -> OrderedList(number = listItem.value)
-                            else -> UnorderedList()
+                
+                // Recursively collect all list items from this list and any nested lists
+                fun collectListItems(listNode: LexicalListNode): List<Pair<LexicalListItemNode, String>> {
+                    val items = mutableListOf<Pair<LexicalListItemNode, String>>()
+                    
+                    listNode.children.fastForEach { child ->
+                        if (child is LexicalListItemNode) {
+                            // Add this list item with its parent list type
+                            items.add(Pair(child, listNode.listType))
+                            
+                            // Recursively collect nested list items
+                            child.children.fastForEach { grandChild ->
+                                if (grandChild is LexicalListNode) {
+                                    items.addAll(collectListItems(grandChild))
+                                }
+                            }
                         }
-                        richParagraph.children.addAll(convertLexicalNodesToRichSpans(listItem.children, richParagraph))
+                    }
+                    
+                    return items
+                }
+                
+                val allListItems = collectListItems(node)
+                
+                allListItems.fastForEach { (listItem, listType) ->
+                    // Only create paragraphs for list items that have text content
+                    val textChildren = listItem.children.filterIsInstance<LexicalTextNode>()
+                    if (textChildren.isNotEmpty()) {
+                        val richParagraph = RichParagraph()
+                        // Convert 0-based indent to 1-based level (add 1)
+                        val level = listItem.indent + 1
+                        richParagraph.type = when (listType) {
+                            "number" -> OrderedList(number = listItem.value, initialLevel = level)
+                            else -> UnorderedList(initialLevel = level)
+                        }
+                        richParagraph.children.addAll(convertLexicalNodesToRichSpans(textChildren, richParagraph))
                         paragraphs.add(richParagraph)
                     }
                 }
+                
                 paragraphs
             }
             
@@ -432,7 +380,6 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 val spans = convertLexicalNodeToRichSpans(node, paragraph)
                 richSpans.addAll(spans)
             } catch (e: Exception) {
-                println("Error converting node to RichSpan: ${e.message}")
                 // Add fallback span
                 richSpans.add(RichSpan(paragraph = paragraph))
             }
@@ -446,35 +393,32 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
      */
     @OptIn(ExperimentalRichTextApi::class)
     private fun convertLexicalNodeToRichSpans(node: LexicalNode, paragraph: RichParagraph): List<RichSpan> {
-        println("🎨 convertLexicalNodeToRichSpans: Converting ${node::class.simpleName}")
         return when (node) {
             is LexicalTextNode -> {
-                println("🎨 convertLexicalNodeToRichSpans: Text node with text='${node.text}', format=${node.formatFlags}")
                 val richSpan = RichSpan(paragraph = paragraph)
                 richSpan.text = node.text
                 richSpan.spanStyle = convertFormatFlagsToSpanStyle(node.formatFlags)
-                println("🎨 convertLexicalNodeToRichSpans: Created span with text='${richSpan.text}'")
                 listOf(richSpan)
             }
             
             is LexicalLinkNode -> {
-                println("🎨 convertLexicalNodeToRichSpans: Link node with ${node.children.size} children")
                 val richSpan = RichSpan(paragraph = paragraph)
                 richSpan.richSpanStyle = RichSpanStyle.Link(url = node.url)
                 
-                // Add text from children
-                val childSpans = convertLexicalNodesToRichSpans(node.children, paragraph)
+                // Only convert text nodes to spans for links, skip nested lists
+                val textChildren = node.children.filterIsInstance<LexicalTextNode>()
+                val childSpans = convertLexicalNodesToRichSpans(textChildren, paragraph)
                 if (childSpans.isNotEmpty()) {
                     richSpan.text = childSpans.joinToString("") { it.text }
                 }
-                println("🎨 convertLexicalNodeToRichSpans: Link span text='${richSpan.text}'")
                 
                 listOf(richSpan)
             }
             
+            // Skip list nodes when converting to spans - they should be handled at paragraph level
+            is LexicalListNode -> emptyList()
+            
             else -> {
-                println("🎨 convertLexicalNodeToRichSpans: Unknown node type ${node::class.simpleName}")
-                // Unknown node type - return empty span
                 listOf(RichSpan(paragraph = paragraph))
             }
         }
@@ -508,7 +452,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 spanStyle = spanStyle.copy(textDecoration = TextDecoration.combine(decorations))
             }
         } catch (e: Exception) {
-            println("Error converting format flags: ${e.message}")
+            // Handle error
         }
         
         return spanStyle
@@ -576,39 +520,30 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
     }
 
     private fun extractStringField(json: String, fieldName: String): String? {
-        // Try both patterns: with and without space after colon
         val patterns = listOf("\"$fieldName\":\"", "\"$fieldName\": \"")
         
-        println("🔍 extractStringField: Looking for '$fieldName' in JSON length ${json.length}")
-        
         for (pattern in patterns) {
-            // For "type" field, use lastIndexOf to get the node's type, not child's type
             val startIndex = if (fieldName == "type") {
                 json.lastIndexOf(pattern)
             } else {
                 json.indexOf(pattern)
             }
-            println("🔍 extractStringField: Pattern '$pattern' found at index $startIndex")
             
             if (startIndex != -1) {
                 val valueStart = startIndex + pattern.length
                 var valueEnd = valueStart
                 
                 while (valueEnd < json.length && json[valueEnd] != '"') {
-                    if (json[valueEnd] == '\\') valueEnd++ // Skip escaped characters
+                    if (json[valueEnd] == '\\') valueEnd++
                     valueEnd++
                 }
                 
-                val result = if (valueEnd < json.length) {
+                return if (valueEnd < json.length) {
                     json.substring(valueStart, valueEnd).replace("\\\"", "\"").replace("\\\\", "\\")
                 } else null
-                
-                println("🔍 extractStringField: Extracted value = '$result'")
-                return result
             }
         }
         
-        println("🔍 extractStringField: Field '$fieldName' not found")
         return null
     }
 
@@ -650,7 +585,6 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                         children.add(lexicalNode)
                     }
                 } catch (e: Exception) {
-                    println("Error converting paragraph: ${e.message}")
                     // Add as simple text paragraph on error
                     val textContent = extractTextFromParagraph(paragraph)
                     if (textContent.isNotEmpty()) {
@@ -663,7 +597,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 }
             }
         } catch (e: Exception) {
-            println("Error converting RichTextState: ${e.message}")
+            // Handle error
         }
 
         // Ensure we have at least one node
@@ -714,7 +648,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 }
             }
         } catch (e: Exception) {
-            println("Error converting paragraph type: ${e.message}")
+            // Handle error
             null
         }
     }
@@ -737,8 +671,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 )
             }
         } catch (e: Exception) {
-            println("Error converting list item: ${e.message}")
-            // Add empty list item on error
+            // Handle error
             listItems.add(
                 LexicalListItemNode(
                     children = listOf(LexicalTextNode(text = "")),
@@ -767,7 +700,6 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                     val lexicalNodes = convertRichSpanToLexical(span)
                     nodes.addAll(lexicalNodes)
                 } catch (e: Exception) {
-                    println("Error converting span: ${e.message}")
                     // Add as simple text on error
                     if (span.text.isNotEmpty()) {
                         nodes.add(LexicalTextNode(text = span.text))
@@ -775,7 +707,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 }
             }
         } catch (e: Exception) {
-            println("Error converting spans: ${e.message}")
+            // Handle error
         }
         
         return nodes
@@ -823,7 +755,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 nodes.addAll(convertRichSpansToLexical(richSpan.children))
             }
         } catch (e: Exception) {
-            println("Error converting individual span: ${e.message}")
+            // Handle error
             // Fallback to simple text
             if (richSpan.text.isNotEmpty()) {
                 nodes.add(LexicalTextNode(text = richSpan.text))
@@ -858,7 +790,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 }
             }
         } catch (e: Exception) {
-            println("Error calculating format flags: ${e.message}")
+            // Handle error
         }
         
         return format
@@ -874,7 +806,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             // For now, return null as headings aren't in the current toolbar
             null
         } catch (e: Exception) {
-            println("Error detecting heading: ${e.message}")
+            // Handle error
             null
         }
     }
@@ -891,7 +823,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             }
             text.toString()
         } catch (e: Exception) {
-            println("Error extracting text from paragraph: ${e.message}")
+            // Handle error
             ""
         }
     }
@@ -909,7 +841,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             }
             text.toString()
         } catch (e: Exception) {
-            println("Error extracting text from span: ${e.message}")
+            // Handle error
             span.text
         }
     }
@@ -925,7 +857,6 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             jsonBuilder.append("}")
             jsonBuilder.toString()
         } catch (e: Exception) {
-            println("Error serializing LexicalRoot to JSON: ${e.message}")
             createBasicLexicalJson("")
         }
     }

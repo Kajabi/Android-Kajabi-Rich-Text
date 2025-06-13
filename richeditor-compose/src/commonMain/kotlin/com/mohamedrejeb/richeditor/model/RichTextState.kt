@@ -4144,20 +4144,12 @@ public class RichTextState internal constructor(
      */
     @ExperimentalRichTextApi
     public fun setLexicalText(lexicalJsonString: String): RichTextState {
-        try {
-            println("📝 setLexicalText: Starting with JSON length ${lexicalJsonString.length}")
+        return try {
             val parsedState = RichTextStateLexicalParser.encode(lexicalJsonString)
-            println("📝 setLexicalText: Parser returned state with text length ${parsedState.annotatedString.text.length}")
-            
-            println("📝 setLexicalText: Calling updateRichParagraphList...")
             updateRichParagraphList(parsedState.richParagraphList)
-            println("📝 setLexicalText: updateRichParagraphList completed. Current text length: ${this.annotatedString.text.length}")
-            println("📝 setLexicalText: Current text: ${this.annotatedString.text.take(50)}...")
+            this
         } catch (e: Exception) {
-            // Log error but leave state unchanged as per user requirement
-            println("📝 ❌ Error parsing Lexical JSON, content unchanged: ${e.message}")
-            e.printStackTrace()
+            this
         }
-        return this
     }
 }
