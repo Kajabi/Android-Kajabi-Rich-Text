@@ -27,9 +27,11 @@ package com.kjcommunities
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.outlined.FormatAlignRight
@@ -38,8 +40,11 @@ import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
@@ -61,11 +66,22 @@ fun KJDemoPanel(
     openLinkDialog: MutableState<Boolean>,
     modifier: Modifier = Modifier,
 ) {
-    LazyRow(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-        modifier = modifier
-    ) {
+    val listState = rememberLazyListState()
+    
+    // Check if there's content that can be scrolled to the right
+    val showRightFade = remember {
+        derivedStateOf {
+            listState.canScrollForward
+        }
+    }
+    
+    Box(modifier = modifier) {
+        LazyRow(
+            state = listState,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
         // Text alignment buttons removed - not supported in Lexical format
         /*
         item {
@@ -347,5 +363,31 @@ fun KJDemoPanel(
             )
         }
         */
+        }
+        
+        // Right fade gradient overlay - always present to maintain consistent layout
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .width(24.dp)
+                .height(48.dp)
+                .background(
+                    brush = if (showRightFade.value) {
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color(0xFF222528) // Match the panel background color
+                            )
+                        )
+                    } else {
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Transparent
+                            )
+                        )
+                    }
+                )
+        )
     }
 }
