@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.mohamedrejeb.richeditor.annotation.ExperimentalRichTextApi
 import com.mohamedrejeb.richeditor.common.generated.resources.Res
-import com.mohamedrejeb.richeditor.common.generated.resources.slack_logo
+import com.mohamedrejeb.richeditor.common.generated.resources.kajabi_logo
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
@@ -148,8 +148,8 @@ fun KJDemoScreen(
                                         .background(Color.White)
                                 ) {
                                     Image(
-                                        painterResource(Res.drawable.slack_logo),
-                                        contentDescription = "Slack Logo",
+                                        painterResource(Res.drawable.kajabi_logo),
+                                        contentDescription = "Kajabi Logo",
                                         modifier = Modifier
                                             .fillMaxSize()
                                             .padding(6.dp)
@@ -166,7 +166,7 @@ fun KJDemoScreen(
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         Text(
-                                            text = "Mohamed Rejeb",
+                                            text = "John Doe",
                                             color = Color.White,
                                             fontWeight = FontWeight.Bold
                                         )
