@@ -196,6 +196,7 @@ public final class com/mohamedrejeb/richeditor/model/RichTextState {
 	public final fun setConfig-kmsmbh4 (JLandroidx/compose/ui/text/style/TextDecoration;JJJI)V
 	public static synthetic fun setConfig-kmsmbh4$default (Lcom/mohamedrejeb/richeditor/model/RichTextState;JLandroidx/compose/ui/text/style/TextDecoration;JJJIILjava/lang/Object;)V
 	public final fun setHtml (Ljava/lang/String;)Lcom/mohamedrejeb/richeditor/model/RichTextState;
+	public final fun setLexicalText (Ljava/lang/String;)Lcom/mohamedrejeb/richeditor/model/RichTextState;
 	public final fun setMarkdown (Ljava/lang/String;)Lcom/mohamedrejeb/richeditor/model/RichTextState;
 	public final fun setSelection-5zc-tL8 (J)V
 	public final fun setText-FDrldGo (Ljava/lang/String;J)Lcom/mohamedrejeb/richeditor/model/RichTextState;

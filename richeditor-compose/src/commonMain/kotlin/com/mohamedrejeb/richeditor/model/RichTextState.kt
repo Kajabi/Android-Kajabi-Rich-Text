@@ -4134,4 +4134,30 @@ public class RichTextState internal constructor(
             }
         )
     }
+
+    /**
+     * Set the text from Lexical JSON string.
+     * This will replace the current rich text content.
+     *
+     * @param lexicalJsonString Lexical JSON string to set
+     * @return [RichTextState] for chaining
+     */
+    @ExperimentalRichTextApi
+    public fun setLexicalText(lexicalJsonString: String): RichTextState {
+        try {
+            println("📝 setLexicalText: Starting with JSON length ${lexicalJsonString.length}")
+            val parsedState = RichTextStateLexicalParser.encode(lexicalJsonString)
+            println("📝 setLexicalText: Parser returned state with text length ${parsedState.annotatedString.text.length}")
+            
+            println("📝 setLexicalText: Calling updateRichParagraphList...")
+            updateRichParagraphList(parsedState.richParagraphList)
+            println("📝 setLexicalText: updateRichParagraphList completed. Current text length: ${this.annotatedString.text.length}")
+            println("📝 setLexicalText: Current text: ${this.annotatedString.text.take(50)}...")
+        } catch (e: Exception) {
+            // Log error but leave state unchanged as per user requirement
+            println("📝 ❌ Error parsing Lexical JSON, content unchanged: ${e.message}")
+            e.printStackTrace()
+        }
+        return this
+    }
 }
