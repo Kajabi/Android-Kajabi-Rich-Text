@@ -26,6 +26,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
+import com.kjcommunities.icons.H1
+import com.kjcommunities.icons.H2
+import com.kjcommunities.icons.FormatIndentIncrease
+import com.kjcommunities.icons.FormatIndentDecrease
 
 @Composable
 fun KJDemoPanel(
@@ -98,7 +102,7 @@ fun KJDemoPanel(
                     state.toggleH1()
                 },
                 isSelected = state.isH1,
-                icon = Icons.Outlined.Title
+                icon = Icons.Outlined.H1
             )
         }
 
@@ -108,7 +112,7 @@ fun KJDemoPanel(
                     state.toggleH2()
                 },
                 isSelected = state.isH2,
-                icon = Icons.Outlined.TextFields
+                icon = Icons.Outlined.H2
             )
         }
 
@@ -293,7 +297,7 @@ fun KJDemoPanel(
                     state.increaseListLevel()
                 },
                 enabled = state.canIncreaseListLevel,
-                icon = Icons.Outlined.TextIncrease,
+                icon = Icons.Outlined.FormatIndentIncrease,
             )
         }
 
@@ -303,7 +307,7 @@ fun KJDemoPanel(
                     state.decreaseListLevel()
                 },
                 enabled = state.canDecreaseListLevel,
-                icon = Icons.Outlined.TextDecrease,
+                icon = Icons.Outlined.FormatIndentDecrease,
             )
         }
 
