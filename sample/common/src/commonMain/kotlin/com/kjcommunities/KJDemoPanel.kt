@@ -99,35 +99,6 @@ fun KJDemoPanel(
         item {
             KJDemoPanelButton(
                 onClick = {
-                    state.toggleH1()
-                },
-                isSelected = state.isH1,
-                icon = Icons.Outlined.H1
-            )
-        }
-
-        item {
-            KJDemoPanelButton(
-                onClick = {
-                    state.toggleH2()
-                },
-                isSelected = state.isH2,
-                icon = Icons.Outlined.H2
-            )
-        }
-
-        item {
-            Box(
-                Modifier
-                    .height(24.dp)
-                    .width(1.dp)
-                    .background(Color(0xFF393B3D))
-            )
-        }
-
-        item {
-            KJDemoPanelButton(
-                onClick = {
                     state.toggleSpanStyle(
                         SpanStyle(
                             fontWeight = FontWeight.Bold
@@ -308,6 +279,26 @@ fun KJDemoPanel(
                 },
                 enabled = state.canDecreaseListLevel,
                 icon = Icons.Outlined.FormatIndentDecrease,
+            )
+        }
+
+        item {
+            KJDemoPanelButton(
+                onClick = {
+                    state.toggleH1()
+                },
+                isSelected = state.isH1,
+                icon = Icons.Outlined.H1
+            )
+        }
+
+        item {
+            KJDemoPanelButton(
+                onClick = {
+                    state.toggleH2()
+                },
+                isSelected = state.isH2,
+                icon = Icons.Outlined.H2
             )
         }
 
