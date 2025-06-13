@@ -1,5 +1,56 @@
 package com.mohamedrejeb.richeditor.ui
 
+/**
+ * BasicRichText - A foundational composable for displaying rich text content in read-only mode.
+ * 
+ * This composable serves as the core display component for rich text content and provides:
+ * 
+ * **Rich Text Display Capabilities**:
+ * - **Formatted Text Rendering**: Displays text with bold, italic, underline, color, and other formatting
+ * - **Interactive Links**: Clickable hyperlinks with hover states and custom styling
+ * - **List Visualization**: Properly formatted ordered and unordered lists with nesting
+ * - **Code Span Display**: Inline code formatting with background and border styling
+ * - **Custom Styling**: Support for custom rich span styles and visual effects
+ * - **Typography Integration**: Seamless integration with Compose typography systems
+ * 
+ * **Interaction Features**:
+ * - **Link Navigation**: Automatic link handling with platform-appropriate URL opening
+ * - **Text Selection**: Optional text selection for copying formatted content
+ * - **Hover Effects**: Mouse hover states for interactive elements (desktop platforms)
+ * - **Touch Feedback**: Appropriate touch feedback for interactive elements
+ * - **Accessibility**: Full screen reader and accessibility service integration
+ * 
+ * **Layout and Styling**:
+ * - **Text Flow**: Proper text wrapping, line breaking, and paragraph spacing
+ * - **Overflow Handling**: Configurable text overflow behavior (clip, ellipsis, visible)
+ * - **Line Limits**: Support for maximum and minimum line constraints
+ * - **Inline Content**: Support for embedding custom composables within text
+ * - **Text Measurement**: Provides text layout results for advanced positioning
+ * 
+ * **Performance Optimization**:
+ * - **Efficient Rendering**: Optimized for displaying large rich text documents
+ * - **Lazy Loading**: Supports lazy loading of images and embedded content
+ * - **Memory Management**: Efficient memory usage for complex formatted text
+ * - **Recomposition Optimization**: Minimal recompositions for better performance
+ * 
+ * **Platform Integration**:
+ * - **Cross-Platform**: Consistent rendering across Android, Desktop, iOS, and Web
+ * - **Image Loading**: Configurable image loading with custom ImageLoader support
+ * - **URL Handling**: Platform-appropriate URL handling and external link opening
+ * - **Font Support**: Support for custom fonts and platform-specific typography
+ * 
+ * **Usage Patterns**:
+ * - **Content Display**: Blog posts, articles, and formatted document display
+ * - **Message Rendering**: Chat messages and communication content with rich formatting
+ * - **Documentation**: Help text, tooltips, and instructional content
+ * - **Previews**: Read-only previews of rich text content being edited elsewhere
+ * - **Static Content**: Formatted static content like terms of service or about pages
+ * 
+ * This component is designed for scenarios where rich text content needs to be displayed
+ * without editing capabilities, providing optimal performance and user experience for
+ * read-only rich text presentation.
+ */
+
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent

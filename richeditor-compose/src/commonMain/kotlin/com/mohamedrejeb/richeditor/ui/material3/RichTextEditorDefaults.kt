@@ -1,5 +1,65 @@
 package com.mohamedrejeb.richeditor.ui.material3
 
+/**
+ * RichTextEditorDefaults - Default values, colors, and styling configurations for Material 3 Rich Text Editors.
+ * 
+ * This object provides comprehensive default configurations for Material Design 3 rich text editing components:
+ * 
+ * **Shape and Dimension Defaults**:
+ * - `outlinedShape`: Default shape for outlined text fields with rounded corners
+ * - `filledShape`: Default shape for filled text fields with top-rounded corners
+ * - `MinHeight`: Minimum height constraint (56.dp) for touch accessibility
+ * - `MinWidth`: Minimum width constraint (280.dp) for usability
+ * - `UnfocusedBorderThickness`: Border thickness for unfocused state (1.dp)
+ * - `FocusedBorderThickness`: Border thickness for focused state (2.dp)
+ * 
+ * **Color System Integration**:
+ * - `richTextEditorColors()`: Complete color scheme for filled text fields
+ * - `outlinedRichTextEditorColors()`: Complete color scheme for outlined text fields
+ * - **State-Aware Colors**: Different colors for enabled, disabled, focused, and error states
+ * - **Semantic Colors**: Proper color roles for text, containers, indicators, and icons
+ * - **Theme Adaptation**: Automatic adaptation to light/dark themes and color schemes
+ * 
+ * **Padding and Spacing Configurations**:
+ * - `richTextEditorWithLabelPadding()`: Padding for text fields with floating labels
+ * - `richTextEditorWithoutLabelPadding()`: Padding for text fields without labels
+ * - `outlinedRichTextEditorPadding()`: Specific padding for outlined variants
+ * - `supportingTextPadding()`: Padding for helper/error text below fields
+ * 
+ * **Container and Decoration Components**:
+ * - `FilledContainerBox()`: Background container for filled text fields
+ * - `OutlinedBorderContainerBox()`: Border container for outlined text fields
+ * - `RichTextEditorDecorationBox()`: Complete decoration system for filled fields
+ * - `OutlinedRichTextEditorDecorationBox()`: Complete decoration system for outlined fields
+ * 
+ * **Animation and Interaction**:
+ * - **Border Animations**: Smooth border color and thickness transitions
+ * - **Focus Animations**: Animated focus indicators and state changes
+ * - **Color Transitions**: Smooth color transitions between different states
+ * - **Label Animations**: Floating label animations with proper timing
+ * 
+ * **Accessibility Features**:
+ * - **Touch Target Sizes**: Minimum touch target sizes for accessibility
+ * - **Color Contrast**: High contrast ratios for text and background colors
+ * - **Focus Indicators**: Clear visual focus indicators for keyboard navigation
+ * - **Screen Reader Support**: Proper semantic structure for assistive technologies
+ * 
+ * **Customization Support**:
+ * - **Color Overrides**: All colors can be customized while maintaining consistency
+ * - **Shape Customization**: Custom shapes for different design requirements
+ * - **Padding Adjustments**: Flexible padding configurations for dense layouts
+ * - **Animation Customization**: Configurable animation durations and curves
+ * 
+ * **Usage Patterns**:
+ * - **Default Styling**: Use default functions for standard Material 3 appearance
+ * - **Theme Integration**: Automatically adapts to Material 3 theme changes
+ * - **Custom Themes**: Override specific values for custom design systems
+ * - **Consistent Styling**: Ensures consistency across all rich text editor instances
+ * 
+ * This defaults system ensures that rich text editors maintain visual consistency with
+ * Material Design 3 principles while providing flexibility for customization and theming.
+ */
+
 import androidx.compose.material3.*
 import androidx.compose.material3.Typography
 import androidx.compose.animation.animateColorAsState

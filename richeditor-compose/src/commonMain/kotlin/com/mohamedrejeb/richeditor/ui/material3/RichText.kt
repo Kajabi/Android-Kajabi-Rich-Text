@@ -1,5 +1,56 @@
 package com.mohamedrejeb.richeditor.ui.material3
 
+/**
+ * RichText (Material 3) - A Material Design 3 text component for displaying rich text content.
+ * 
+ * This composable provides a Material Design 3 styled text display with comprehensive rich text support:
+ * 
+ * **Material Design 3 Integration**:
+ * - **Typography System**: Seamlessly integrates with Material 3 typography scale and font families
+ * - **Color System**: Automatically adapts to Material 3 color schemes and theme changes
+ * - **Content Color**: Respects Material 3 content color hierarchy and alpha values
+ * - **Density Support**: Responds to Material density settings for optimal spacing
+ * - **Theme Consistency**: Maintains visual consistency with other Material 3 components
+ * 
+ * **Rich Text Display Features**:
+ * - **Text Formatting**: Displays bold, italic, underline, strikethrough, and colored text
+ * - **Interactive Hyperlinks**: Clickable links with Material 3 color theming and hover states
+ * - **List Rendering**: Properly formatted ordered and unordered lists with Material spacing
+ * - **Code Spans**: Inline code display with Material 3 surface colors and typography
+ * - **Custom Styles**: Support for custom rich span styles following Material guidelines
+ * - **Paragraph Styling**: Text alignment, line height, and spacing following Material specs
+ * 
+ * **Typography and Layout**:
+ * - **Font Scaling**: Respects system font size preferences and accessibility settings
+ * - **Line Height**: Optimal line spacing for readability across different text sizes
+ * - **Text Overflow**: Configurable overflow handling with ellipsis or clipping
+ * - **Text Wrapping**: Intelligent word wrapping and line breaking
+ * - **Baseline Alignment**: Proper baseline alignment with other Material components
+ * 
+ * **Accessibility and Interaction**:
+ * - **Screen Reader Support**: Full accessibility support with proper content descriptions
+ * - **High Contrast**: Adapts to high contrast accessibility settings
+ * - **Touch Targets**: Appropriate touch target sizes for interactive elements
+ * - **Keyboard Navigation**: Support for keyboard navigation of interactive content
+ * - **Focus Management**: Proper focus handling for embedded interactive elements
+ * 
+ * **Performance and Platform**:
+ * - **Efficient Rendering**: Optimized text rendering for smooth scrolling and performance
+ * - **Cross-Platform**: Consistent appearance across Android, Desktop, iOS, and Web
+ * - **Memory Optimization**: Efficient memory usage for large text documents
+ * - **Image Integration**: Support for embedded images with Material loading states
+ * 
+ * **Common Use Cases**:
+ * - **Content Display**: Articles, blog posts, and formatted content in Material apps
+ * - **Message Display**: Chat messages and communication content with rich formatting
+ * - **Help Content**: Documentation, tooltips, and instructional text
+ * - **Card Content**: Rich text content within Material cards and surfaces
+ * - **List Items**: Formatted text within Material list items and components
+ * 
+ * This component is ideal for displaying rich text content in Material Design 3 applications
+ * where consistency with the design system and optimal user experience are priorities.
+ */
+
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle

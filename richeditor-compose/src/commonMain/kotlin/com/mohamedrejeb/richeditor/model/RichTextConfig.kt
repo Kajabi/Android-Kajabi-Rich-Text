@@ -1,5 +1,48 @@
 package com.mohamedrejeb.richeditor.model
 
+/**
+ * RichTextConfig - Configuration management class for customizing Rich Text Editor appearance and behavior.
+ * 
+ * This class provides centralized configuration for all visual and behavioral aspects of the rich text editor:
+ * 
+ * **Link Styling Configuration**:
+ * - `linkColor`: Sets the color for hyperlink text (default: Color.Blue)
+ * - `linkTextDecoration`: Controls link text decoration like underlines (default: TextDecoration.Underline)
+ * 
+ * **Code Span Styling Configuration**:
+ * - `codeSpanColor`: Text color for inline code spans (default: Color.Unspecified)
+ * - `codeSpanBackgroundColor`: Background color for code spans (default: Color.Transparent)
+ * - `codeSpanStrokeColor`: Border/stroke color for code spans (default: Color.LightGray)
+ * 
+ * **List Indentation Configuration**:
+ * - `listIndent`: Universal indentation for both ordered and unordered lists (default: 38)
+ * - `orderedListIndent`: Specific indentation for numbered lists (default: 38)
+ * - `unorderedListIndent`: Specific indentation for bullet lists (default: 38)
+ * 
+ * **List Style Type Configuration**:
+ * - `orderedListStyleType`: Numbering style for ordered lists (1,2,3 vs i,ii,iii vs A,B,C)
+ * - `unorderedListStyleType`: Bullet style for unordered lists (•, ◦, ▪)
+ * 
+ * **Editor Behavior Configuration**:
+ * - `preserveStyleOnEmptyLine`: Whether formatting persists on empty lines (default: true)
+ * - `exitListOnEmptyItem`: Whether pressing Enter on empty list item exits the list (default: true)
+ * 
+ * **Key Features**:
+ * - **Reactive Updates**: All configuration changes automatically trigger UI updates
+ * - **Nested List Support**: Different styles for different nesting levels
+ * - **Cross-Platform Consistency**: Same configuration works across all supported platforms
+ * - **Runtime Modification**: Configuration can be changed dynamically during editor usage
+ * 
+ * **Usage Patterns**:
+ * - Access via `richTextState.config` property
+ * - Modify properties directly to see immediate visual changes
+ * - Commonly used for theming and customizing editor appearance
+ * - Essential for implementing custom formatting toolbars and style controls
+ * 
+ * This configuration system enables developers to create rich text editors that match their
+ * application's design system and user experience requirements.
+ */
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 import com.mohamedrejeb.richeditor.paragraph.type.OrderedListStyleType

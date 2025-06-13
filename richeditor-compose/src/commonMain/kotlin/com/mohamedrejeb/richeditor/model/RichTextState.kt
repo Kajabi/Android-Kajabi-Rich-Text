@@ -1,5 +1,35 @@
 package com.mohamedrejeb.richeditor.model
 
+/**
+ * RichTextState - The core state management class for the Rich Text Editor library.
+ * 
+ * This class serves as the central hub for managing all aspects of rich text editing and provides:
+ * - **Text Content Management**: Stores and manages the rich text content with formatting
+ * - **Selection and Cursor Control**: Tracks text selection, cursor position, and composition state
+ * - **Styling Operations**: Applies and manages span styles (bold, italic, etc.) and paragraph styles
+ * - **List Management**: Handles ordered/unordered lists with nesting and indentation
+ * - **Link Management**: Creates, edits, and removes hyperlinks with custom styling
+ * - **Import/Export Functionality**: Converts between rich text and HTML/Markdown/Lexical formats
+ * - **Configuration Management**: Provides centralized configuration for colors, indentation, and behavior
+ * - **State Persistence**: Supports saving and restoring editor state across sessions
+ * 
+ * Key architectural features:
+ * - **Reactive State**: Uses Compose state management for automatic UI updates
+ * - **Immutable Operations**: All text modifications return new state instances
+ * - **Format Compatibility**: Supports multiple rich text formats (HTML, Markdown, Lexical JSON)
+ * - **Cross-Platform**: Works consistently across Android, Desktop, iOS, and Web platforms
+ * - **Performance Optimized**: Efficient text processing and minimal recompositions
+ * 
+ * Usage patterns:
+ * - **Editor Integration**: Used with RichTextEditor composables for interactive editing
+ * - **Display Integration**: Used with RichText composables for read-only display
+ * - **Programmatic Control**: Allows full programmatic control over text content and formatting
+ * - **Custom Toolbars**: Provides state information for building custom formatting toolbars
+ * 
+ * This class is the foundation that enables rich text editing capabilities across the entire library
+ * and serves as the primary interface for developers implementing rich text functionality.
+ */
+
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
@@ -46,6 +76,49 @@ import kotlin.reflect.KClass
 import com.mohamedrejeb.richeditor.parser.utils.H1SpanStyle
 import com.mohamedrejeb.richeditor.parser.utils.H2SpanStyle
 
+/**
+ * rememberRichTextState - Creates and remembers a RichTextState instance with automatic state preservation.
+ * 
+ * This composable function provides the standard way to create and manage RichTextState in Compose:
+ * 
+ * **State Management Features**:
+ * - **Automatic Persistence**: Saves and restores rich text content across configuration changes
+ * - **Compose Integration**: Fully integrated with Compose's state management system
+ * - **Memory Efficiency**: Efficiently manages state lifecycle and memory usage
+ * - **Recomposition Optimization**: Minimizes unnecessary recompositions for better performance
+ * 
+ * **Persistence Behavior**:
+ * - **Content Preservation**: Rich text content and formatting are preserved across app lifecycle
+ * - **Selection State**: Text selection and cursor position are maintained during state restoration
+ * - **Configuration Changes**: Survives screen rotations, theme changes, and other configuration updates
+ * - **Process Death**: Handles Android process death and restoration gracefully
+ * 
+ * **Usage Patterns**:
+ * - **Standard Creation**: Primary method for creating RichTextState in Compose applications
+ * - **Screen-Level State**: Typically called at screen or major component level
+ * - **Shared State**: Can be passed down to child components for shared rich text editing
+ * - **Multiple Instances**: Multiple independent instances can be created for different text fields
+ * 
+ * **Integration Examples**:
+ * ```kotlin
+ * // Basic usage
+ * val richTextState = rememberRichTextState()
+ * RichTextEditor(state = richTextState)
+ * 
+ * // With initial content
+ * val richTextState = rememberRichTextState()
+ * LaunchedEffect(Unit) {
+ *     richTextState.setHtml("<p><b>Initial content</b></p>")
+ * }
+ * 
+ * // Multiple editors
+ * val titleState = rememberRichTextState()
+ * val contentState = rememberRichTextState()
+ * ```
+ * 
+ * This function is essential for proper rich text state management in Compose applications
+ * and ensures optimal user experience with automatic state preservation.
+ */
 @Composable
 public fun rememberRichTextState(): RichTextState {
     return rememberSaveable(saver = RichTextState.Saver) {

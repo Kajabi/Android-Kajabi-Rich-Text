@@ -1,5 +1,52 @@
 package com.mohamedrejeb.richeditor.ui.material3
 
+/**
+ * RichTextEditor (Material 3) - A Material Design 3 filled text field with rich text editing capabilities.
+ * 
+ * This composable provides a complete Material Design 3 text field experience with full rich text support:
+ * 
+ * **Material Design 3 Features**:
+ * - **Filled Container**: Uses Material 3 filled text field design with rounded corners
+ * - **Label Animation**: Animated floating label that moves when focused or filled
+ * - **Supporting Text**: Optional helper text below the field for guidance or error messages
+ * - **Leading/Trailing Icons**: Icon slots for additional functionality or visual cues
+ * - **Error States**: Built-in error styling with color changes and validation support
+ * - **Focus Indicators**: Visual focus indicators following Material 3 specifications
+ * 
+ * **Rich Text Capabilities**:
+ * - **Text Formatting**: Bold, italic, underline, strikethrough, and color formatting
+ * - **Paragraph Styles**: Text alignment, line spacing, and paragraph formatting
+ * - **Lists**: Ordered and unordered lists with nesting and custom styling
+ * - **Hyperlinks**: Clickable links with custom colors and decorations
+ * - **Code Spans**: Inline code formatting with background and border styling
+ * - **Import/Export**: HTML, Markdown, and Lexical JSON format support
+ * 
+ * **Interaction Features**:
+ * - **Keyboard Shortcuts**: Standard rich text keyboard shortcuts (Ctrl+B, Ctrl+I, etc.)
+ * - **Touch Gestures**: Tap to position cursor, drag to select text
+ * - **Clipboard Integration**: Rich formatting preserved in copy/paste operations
+ * - **Undo/Redo**: Built-in undo/redo functionality for text operations
+ * - **Selection Tools**: Text selection with formatting toolbar integration
+ * 
+ * **Accessibility & Platform Support**:
+ * - **Screen Readers**: Full accessibility support with proper content descriptions
+ * - **Keyboard Navigation**: Complete keyboard navigation support
+ * - **Cross-Platform**: Consistent behavior across Android, Desktop, iOS, and Web
+ * - **RTL Support**: Right-to-left text direction support
+ * - **High Contrast**: Adapts to system accessibility settings
+ * 
+ * **Usage Patterns**:
+ * - **Content Creation**: Blog posts, articles, and document editing
+ * - **Messaging**: Rich text messaging and chat applications
+ * - **Forms**: Enhanced form fields requiring formatted text input
+ * - **Note Taking**: Rich note-taking applications with formatting support
+ * - **Comments**: Comment systems with rich text formatting capabilities
+ * 
+ * This component combines the familiar Material Design 3 text field experience with powerful
+ * rich text editing capabilities, making it ideal for applications requiring formatted text input
+ * while maintaining design consistency with Material Design principles.
+ */
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource

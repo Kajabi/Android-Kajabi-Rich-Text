@@ -1,5 +1,53 @@
 package com.mohamedrejeb.richeditor.ui.material3
 
+/**
+ * OutlinedRichTextEditor (Material 3) - A Material Design 3 outlined text field with rich text editing capabilities.
+ * 
+ * This composable provides a Material Design 3 outlined text field experience with comprehensive rich text support:
+ * 
+ * **Material Design 3 Outlined Features**:
+ * - **Outlined Container**: Clean outlined design with customizable border colors and thickness
+ * - **Label Cutout**: Floating label with proper border cutout for seamless integration
+ * - **Focus Animation**: Smooth border color and thickness transitions on focus changes
+ * - **Supporting Text**: Helper text positioned below the field for guidance or validation
+ * - **Leading/Trailing Icons**: Icon slots with proper spacing and alignment
+ * - **Error Handling**: Comprehensive error state styling with color and border changes
+ * - **Transparent Background**: Clean appearance that works well on various backgrounds
+ * 
+ * **Rich Text Editing Features**:
+ * - **Character Formatting**: Bold, italic, underline, strikethrough, color, and font styling
+ * - **Paragraph Control**: Text alignment, indentation, line height, and spacing
+ * - **List Management**: Nested ordered and unordered lists with customizable styling
+ * - **Link Creation**: Interactive hyperlinks with hover states and custom appearance
+ * - **Code Formatting**: Inline code spans with syntax highlighting support
+ * - **Format Conversion**: Seamless import/export between HTML, Markdown, and Lexical formats
+ * 
+ * **Advanced Interaction**:
+ * - **Keyboard Shortcuts**: Full keyboard shortcut support for formatting operations
+ * - **Gesture Recognition**: Touch gestures for text selection and cursor positioning
+ * - **Clipboard Rich Text**: Preserves formatting in copy/paste operations
+ * - **Undo/Redo System**: Comprehensive undo/redo with formatting state preservation
+ * - **Selection Management**: Advanced text selection with formatting context awareness
+ * 
+ * **Design System Integration**:
+ * - **Theme Compatibility**: Automatically adapts to Material 3 color schemes and typography
+ * - **Density Support**: Responds to Material density settings for compact/comfortable layouts
+ * - **Motion Integration**: Uses Material motion specifications for animations
+ * - **Accessibility First**: Built-in accessibility features following Material guidelines
+ * - **Responsive Design**: Adapts to different screen sizes and orientations
+ * 
+ * **Use Cases & Applications**:
+ * - **Document Editing**: Professional document creation with rich formatting
+ * - **Content Management**: CMS interfaces requiring formatted text input
+ * - **Communication**: Email composition, messaging with rich text support
+ * - **Educational**: Note-taking applications with formatting capabilities
+ * - **Creative Writing**: Writing applications with advanced text formatting
+ * 
+ * The outlined variant is particularly suitable for forms and interfaces where a cleaner,
+ * less visually heavy appearance is desired while maintaining full rich text functionality
+ * and Material Design 3 compliance.
+ */
+
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*

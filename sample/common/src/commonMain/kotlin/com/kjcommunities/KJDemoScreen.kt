@@ -32,7 +32,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.Send
-import androidx.compose.material.icons.outlined.Download
+
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
@@ -160,38 +160,11 @@ fun KJDemoScreen(
                                         .weight(1f)
                                         .padding(start = 12.dp)
                                 ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Text(
-                                            text = "John Doe",
-                                            color = Color.White,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        
-                                        // Download/Copy Lexical JSON button
-                                        IconButton(
-                                            onClick = {
-                                                try {
-                                                    val lexicalJson = message.getLexicalText()
-                                                    clipboardManager.setText(AnnotatedString(lexicalJson))
-                                                    // TODO: Could add a toast/snackbar here to show success
-                                                } catch (e: Exception) {
-                                                    e.printStackTrace()
-                                                }
-                                            },
-                                            modifier = Modifier.size(24.dp)
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Outlined.Download,
-                                                contentDescription = "Copy Lexical JSON",
-                                                tint = Color(0xFFCBCCCD),
-                                                modifier = Modifier.size(16.dp)
-                                            )
-                                        }
-                                    }
+                                    Text(
+                                        text = "John Doe",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                     Spacer(Modifier.height(4.dp))
                                     RichText(
                                         state = message,

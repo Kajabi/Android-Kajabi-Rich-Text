@@ -1,5 +1,46 @@
 package com.mohamedrejeb.richeditor.ui
 
+/**
+ * BasicRichTextEditor - The foundational composable for rich text editing functionality.
+ * 
+ * This composable serves as the core building block for all rich text editing interfaces and provides:
+ * 
+ * **Core Editing Capabilities**:
+ * - **Rich Text Input**: Handles text input with formatting preservation and application
+ * - **Selection Management**: Manages text selection, cursor positioning, and composition state
+ * - **Keyboard Integration**: Processes keyboard input, shortcuts, and IME actions
+ * - **Touch Interaction**: Handles tap gestures, text selection, and cursor placement
+ * - **Clipboard Operations**: Supports copy, cut, paste with rich formatting preservation
+ * 
+ * **Styling and Formatting**:
+ * - **Span Styles**: Applies bold, italic, underline, color, and other character-level formatting
+ * - **Paragraph Styles**: Manages paragraph-level formatting like alignment and indentation
+ * - **List Support**: Handles ordered and unordered lists with proper nesting
+ * - **Link Management**: Creates and manages hyperlinks with custom styling
+ * - **Custom Styles**: Supports custom rich span styles and visual transformations
+ * 
+ * **Platform Integration**:
+ * - **Cross-Platform**: Works consistently across Android, Desktop, iOS, and Web
+ * - **Accessibility**: Integrates with platform accessibility services
+ * - **Input Methods**: Supports various input methods and keyboard layouts
+ * - **Performance**: Optimized for smooth editing experience with large documents
+ * 
+ * **Architecture Features**:
+ * - **Decoration Box Pattern**: Uses decoration box for flexible UI customization
+ * - **State Management**: Integrates with RichTextState for reactive updates
+ * - **Modifier Support**: Fully supports Compose modifier chain for styling
+ * - **Interaction Source**: Provides interaction state for custom UI behaviors
+ * 
+ * **Usage Patterns**:
+ * - **Foundation Component**: Used as base for Material Design text fields (RichTextEditor, OutlinedRichTextEditor)
+ * - **Custom Implementations**: Enables building custom rich text editors with specific design requirements
+ * - **Minimal UI**: Provides rich text editing without built-in decorations like borders or labels
+ * - **Advanced Customization**: Allows full control over appearance through decoration box parameter
+ * 
+ * This composable is designed for developers who need maximum flexibility in creating rich text
+ * editing interfaces while maintaining full rich text functionality and cross-platform compatibility.
+ */
+
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
