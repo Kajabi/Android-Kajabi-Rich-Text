@@ -1,5 +1,29 @@
 package com.kjcommunities
 
+/**
+ * KJDemoPanel - A custom formatting toolbar component for the Rich Text Editor.
+ * 
+ * This class demonstrates how to create a comprehensive formatting toolbar that provides:
+ * - Text formatting buttons (Bold, Italic, Underline, Strikethrough)
+ * - Hyperlink creation and editing functionality
+ * - List formatting (Unordered/Bulleted and Ordered/Numbered lists)
+ * - List indentation controls (Increase/Decrease list level)
+ * - Heading formatting (H1 and H2 with custom icons)
+ * - Visual separators between button groups
+ * 
+ * Key features:
+ * - Uses custom icons for H1, H2, and indent/outdent operations
+ * - Integrates with RichTextState to reflect current formatting state
+ * - Shows selected state for active formatting options
+ * - Handles enabled/disabled states for context-sensitive buttons (like list indentation)
+ * - Opens link dialog for hyperlink management
+ * 
+ * The toolbar is optimized for Lexical JSON format compatibility, with non-supported
+ * features (text alignment, font size, colors) commented out but preserved for reference.
+ * 
+ * This serves as a reference implementation for building custom rich text editor toolbars.
+ */
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

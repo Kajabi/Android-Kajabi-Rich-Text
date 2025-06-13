@@ -1,5 +1,26 @@
 package com.kjcommunities
 
+/**
+ * KJDemoScreen - A comprehensive demonstration screen for the Rich Text Editor library.
+ * 
+ * This class serves as a Slack-like chat interface that demonstrates how to:
+ * - Configure and use RichTextState with custom styling (green hyperlinks, code spans, list indentation)
+ * - Implement a rich text editor with a custom toolbar panel
+ * - Display formatted messages using the RichText component
+ * - Handle Lexical JSON import/export functionality
+ * - Copy Lexical JSON data to clipboard for debugging
+ * - Manage multiple RichTextState instances for chat messages
+ * - Integrate link dialog functionality for hyperlink creation/editing
+ * 
+ * The screen includes:
+ * - Clean top navigation bar with back button
+ * - Message display area showing formatted rich text content
+ * - Rich text editor with formatting toolbar at the bottom
+ * - Send functionality to add messages to the chat
+ * 
+ * This serves as a clean, production-ready demo interface for the rich text editor library.
+ */
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -54,7 +75,7 @@ fun KJDemoScreen(
     val openLinkDialog = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        richTextState.config.linkColor = Color(0xFF1d9bd1)
+        richTextState.config.linkColor = Color(0xFF00C851) // Green color for links
         richTextState.config.linkTextDecoration = TextDecoration.None
         richTextState.config.codeSpanColor = Color(0xFFd7882d)
         richTextState.config.codeSpanBackgroundColor = Color.Transparent
@@ -82,114 +103,7 @@ fun KJDemoScreen(
                             }
                         },
                         actions = {
-                            // Test icon 0: Run round-trip test
-                            IconButton(
-                                onClick = {
-                                    try {
-                                        println("🧪 Running Lexical Round-Trip Test...")
-                                        val testResult = LexicalRoundTripTest.runTest()
-                                        
-                                        if (testResult.success) {
-                                            println("✅ ROUND-TRIP TEST PASSED!")
-                                            println("- Text matches: ${testResult.textMatches}")
-                                            println("- Demo JSON works: ${testResult.demoJsonWorks}")
-                                            println("- Heading styles work: ${testResult.headingStylesWork}")
-                                            println("- Original length: ${testResult.originalTextLength}")
-                                            println("- Imported length: ${testResult.importedTextLength}")
-                                            println("- JSON length: ${testResult.exportedJsonLength}")
-                                        } else {
-                                            println("❌ ROUND-TRIP TEST FAILED!")
-                                            testResult.error?.let { println("Error: $it") }
-                                            println("- Text matches: ${testResult.textMatches}")
-                                            println("- Demo JSON works: ${testResult.demoJsonWorks}")
-                                            println("- Heading styles work: ${testResult.headingStylesWork}")
-                                        }
-                                        
-                                        println("Details: ${testResult.details}")
-                                    } catch (e: Exception) {
-                                        println("🧪 ❌ ERROR in round-trip test: ${e.message}")
-                                        e.printStackTrace()
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.PlayArrow,
-                                    contentDescription = "Run Round-Trip Test",
-                                    tint = Color.Green
-                                )
-                            }
-                            
-                            // Test icon 1: Load minified JSON from resource file
-                            IconButton(
-                                onClick = {
-                                    try {
-                                        val minifiedJson = LexicalTestData.getMinifiedTestJson()
-                                        
-                                        println("🔥 JSON Length: ${minifiedJson.length}")
-                                        println("🔥 Creating new RichTextState...")
-                                        
-                                        // Create a new RichTextState and load the JSON
-                                        val testMessage = RichTextState()
-                                        println("🔥 Calling setLexicalText...")
-                                        testMessage.setLexicalText(minifiedJson)
-                                        
-                                        println("🔥 setLexicalText completed. Message text length: ${testMessage.annotatedString.text.length}")
-                                        println("🔥 Message text: ${testMessage.annotatedString.text.take(100)}...")
-                                        
-                                        // Add it to the messages
-                                        println("🔥 Current messages list size: ${messages.size}")
-                                        messages.add(testMessage)
-                                        println("🔥 Messages list size after add: ${messages.size}")
-                                        
-                                        println("🔥 ✅ MINIFIED JSON TEST COMPLETED SUCCESSFULLY")
-                                    } catch (e: Exception) {
-                                        println("🔥 ❌ ERROR in minified JSON test: ${e.message}")
-                                        e.printStackTrace()
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.PlayArrow,
-                                    contentDescription = "Load Minified JSON Test",
-                                    tint = Color.White
-                                )
-                            }
-                            
-                            // Test icon 2: Load pretty-printed JSON from resource file
-                            IconButton(
-                                onClick = {
-                                    try {
-                                        val prettyJson = LexicalTestData.getPrettyTestJson()
-                                        
-                                        println("🌟 Pretty JSON Length: ${prettyJson.length}")
-                                        println("🌟 Creating new RichTextState...")
-                                        
-                                        // Create a new RichTextState and load the JSON
-                                        val testMessage = RichTextState()
-                                        println("🌟 Calling setLexicalText...")
-                                        testMessage.setLexicalText(prettyJson)
-                                        
-                                        println("🌟 setLexicalText completed. Message text length: ${testMessage.annotatedString.text.length}")
-                                        println("🌟 Message text: ${testMessage.annotatedString.text.take(100)}...")
-                                        
-                                        // Add it to the messages
-                                        println("🌟 Current messages list size: ${messages.size}")
-                                        messages.add(testMessage)
-                                        println("🌟 Messages list size after add: ${messages.size}")
-                                        
-                                        println("🌟 ✅ PRETTY JSON TEST COMPLETED SUCCESSFULLY")
-                                    } catch (e: Exception) {
-                                        println("🌟 ❌ ERROR in pretty JSON test: ${e.message}")
-                                        e.printStackTrace()
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Settings,
-                                    contentDescription = "Load Pretty JSON Test",
-                                    tint = Color.White
-                                )
-                            }
+                            // Actions removed for cleaner demo interface
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = Color(0xFF1a1d21),
@@ -265,7 +179,7 @@ fun KJDemoScreen(
                                                     clipboardManager.setText(AnnotatedString(lexicalJson))
                                                     // TODO: Could add a toast/snackbar here to show success
                                                 } catch (e: Exception) {
-                                                    println("Error copying Lexical JSON: ${e.message}")
+                                                    e.printStackTrace()
                                                 }
                                             },
                                             modifier = Modifier.size(24.dp)

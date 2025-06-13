@@ -1,5 +1,31 @@
 package com.kjcommunities
 
+/**
+ * KJDemoLinkDialog - A modal dialog component for creating and editing hyperlinks in the Rich Text Editor.
+ * 
+ * This class demonstrates how to build a comprehensive link management interface that handles:
+ * - Creating new hyperlinks with custom text and URL
+ * - Editing existing hyperlinks (updating URL or text)
+ * - Removing existing hyperlinks from selected text
+ * - Different interaction modes based on text selection state
+ * 
+ * Key functionality:
+ * - **New Link Creation**: When no text is selected, allows entering both link text and URL
+ * - **Link from Selection**: When text is selected, uses selected text and only requires URL input
+ * - **Edit Existing Link**: When cursor is on existing link, pre-fills current values for editing
+ * - **Link Removal**: Provides "Remove" button when editing existing links
+ * 
+ * UI Features:
+ * - Dark theme styling consistent with the demo app
+ * - Form validation (requires both text and URL for new links, URL for existing)
+ * - Proper keyboard navigation and accessibility
+ * - Cancel/Save/Remove action buttons
+ * - Auto-population of fields based on current selection/link state
+ * 
+ * This serves as a reference implementation for building custom link management dialogs
+ * that integrate with the RichTextState link functionality.
+ */
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
