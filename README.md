@@ -20,11 +20,13 @@ The library is built on a solid foundation with `RichTextState` for state manage
 
 The **KJ Communities Demo** (`/sample/common/src/commonMain/kotlin/com/kjcommunities/`) represents the flagship example of this library in action. It demonstrates a Slack-like chat interface with full @ mention functionality and serves as the primary reference for implementing @ mentions in production applications.
 
-### Live Demo Video
+### Live Demo
 
-https://github.com/Kajabi/Android-Kajabi-Rich-Text/raw/main/docs/videos/demo.mp4
+![@ Mentions Demo](docs/videos/demo.gif)
 
-> **📱 Click the link above to watch the demo video** showing @ mention autocomplete, atomic behavior, and chat-like interface in action!
+> **🎬 See @ mention autocomplete, atomic behavior, and chat-like interface in action!**
+> 
+> **📹 [High-quality video version](https://github.com/Kajabi/Android-Kajabi-Rich-Text/raw/main/docs/videos/demo.mp4)** (MP4, 11MB)
 
 ### Key Features Demonstrated
 
