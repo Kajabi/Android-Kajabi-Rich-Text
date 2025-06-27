@@ -18,9 +18,9 @@ publishing {
 
         // Provide artifacts information required by Maven Central
         pom {
-            name.set("Compose Rich Editor")
-            description.set("A Compose multiplatform library that provides a rich text editor.")
-            url.set("https://github.com/MohamedRejeb/Compose-Rich-Editor")
+            name.set("Compose Rich Editor with @ Mentions")
+            description.set("A Compose multiplatform rich text editor with advanced @ mention functionality and Lexical JSON compatibility.")
+            url.set("https://github.com/Kajabi/Android-Kajabi-Rich-Text")
 
             licenses {
                 license {
@@ -30,23 +30,26 @@ publishing {
             }
             issueManagement {
                 system.set("Github")
-                url.set("https://github.com/MohamedRejeb/Compose-Rich-Editor/issues")
+                url.set("https://github.com/Kajabi/Android-Kajabi-Rich-Text/issues")
             }
             scm {
-                connection.set("https://github.com/MohamedRejeb/Compose-Rich-Editor.git")
-                url.set("https://github.com/MohamedRejeb/Compose-Rich-Editor")
+                connection.set("https://github.com/Kajabi/Android-Kajabi-Rich-Text.git")
+                url.set("https://github.com/Kajabi/Android-Kajabi-Rich-Text")
             }
             developers {
                 developer {
-                    id.set("MohamedRejeb")
-                    name.set("Mohamed Rejeb")
-                    email.set("mohamedrejeb445@gmail.com")
+                    id.set("PGMacDesign")
+                    name.set("Patrick MacDowell")
+                    email.set("patrick.macdowell@kajabi.com")
                 }
             }
         }
     }
 }
 
+// For JitPack, signing is optional and can cause issues
+// Comment out the signing configuration for JitPack
+/*
 signing {
     useInMemoryPgpKeys(
         System.getenv("OSSRH_GPG_SECRET_KEY_ID"),
@@ -60,3 +63,4 @@ signing {
 project.tasks.withType(AbstractPublishToMaven::class.java).configureEach {
     dependsOn(project.tasks.withType(Sign::class.java))
 }
+*/

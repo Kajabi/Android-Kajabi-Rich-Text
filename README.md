@@ -1,270 +1,198 @@
-<h1 align="center">Compose Rich Editor</h1><br>
+# Compose Rich Text Editor with @ Mentions
 
-[![Kotlin](https://img.shields.io/badge/kotlin-2.1.10-blue.svg?logo=kotlin)](http://kotlinlang.org)
-[![Compose](https://img.shields.io/badge/compose-1.7.3-blue.svg?logo=jetpackcompose)](https://www.jetbrains.com/lp/compose-multiplatform)
-[![MohamedRejeb](https://raw.githubusercontent.com/MohamedRejeb/MohamedRejeb/main/badges/mohamedrejeb.svg)](https://github.com/MohamedRejeb)
-[![Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
-[![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21)
-[![Maven Central](https://img.shields.io/maven-central/v/com.mohamedrejeb.richeditor/richeditor-compose/1.0.0-rc12)](https://search.maven.org/search?q=g:%22com.mohamedrejeb.richeditor%22%20AND%20a:%22richeditor-compose%22)
+A powerful, multiplatform rich text editor for Jetpack Compose with comprehensive formatting capabilities and advanced @ mention functionality. This library provides everything you need to create sophisticated text editing experiences across Android, Desktop, iOS, JS, and WASM platforms.
 
-![Compose Rich Editor](docs/images/logo-large-light.svg#gh-light-mode-only)
-![Compose Rich Editor](docs/images/logo-large-dark.svg#gh-dark-mode-only)
+## What This Library Does
 
-A rich text editor library for both Jetpack Compose and Compose Multiplatform, fully customizable and supports the common rich text editor features
+This rich text editor offers a complete text formatting solution with:
 
-- **Multiplatform**: Compose Rich Editor supports Compose Multiplatform (Android, iOS, Desktop, Web).
-- **Easy to use**: Compose Rich Editor's API leverages Kotlin's language features for simplicity and minimal boilerplate.
-- **WYSIWYG**: Compose Rich Editor is a WYSIWYG editor that supports the most common text styling features.
+- **Rich Text Formatting**: Bold, italic, underline, strikethrough, headings (H1, H2), hyperlinks
+- **List Support**: Ordered and unordered lists with multi-level indentation
+- **@ Mention System**: Advanced user mention functionality with autocomplete dropdown
+- **Lexical JSON Compatibility**: Full import/export support for Lexical editor format
+- **Atomic Behavior**: @ mentions behave as single units (can't be partially edited)
+- **Customizable Styling**: Configurable colors, decorations, and visual appearance
+- **Cross-Platform**: Works seamlessly across all Compose Multiplatform targets
 
-## Screenshots
+The library is built on a solid foundation with `RichTextState` for state management, comprehensive parsing systems for HTML/Markdown/Lexical formats, and highly customizable UI components.
 
-### Slack Demo
-![Slack Demo](docs/images/screenshot-01.png)
+## KJ Communities Demo - The Complete Implementation
 
-### Html to Rich Text
-![Slack Demo](docs/images/screenshot-02.png)
+The **KJ Communities Demo** (`/sample/common/src/commonMain/kotlin/com/kjcommunities/`) represents the flagship example of this library in action. It demonstrates a Slack-like chat interface with full @ mention functionality and serves as the primary reference for implementing @ mentions in production applications.
 
-### Markdown to Rich Text
-![Slack Demo](docs/images/screenshot-03.png)
+### Key Features Demonstrated
 
-## Download
+- **@ Mention Autocomplete**: Type `@` followed by a name to see filtered user suggestions
+- **Intelligent Dropdown Positioning**: Dropdown appears above the text input to avoid covering the keyboard
+- **Avatar Support**: User profile pictures with fallback icons using Coil3 image loading
+- **Atomic Mention Behavior**: @ mentions can only be deleted entirely, not partially edited
+- **Rich Formatting Toolbar**: Complete formatting controls optimized for Lexical JSON compatibility
+- **Message History**: Chat-like interface showing formatted messages with long-press to copy Lexical JSON
+- **Real-time Text Processing**: Seamless integration between typing, autocomplete, and mention insertion
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.mohamedrejeb.richeditor/richeditor-compose/1.0.0-rc12)](https://search.maven.org/search?q=g:%22com.mohamedrejeb.richeditor%22%20AND%20a:%22richeditor-compose%22)
+### Live Demo Features
 
-Compose Rich Editor is available on `mavenCentral()`.
+The demo includes sample mention data and test buttons that demonstrate:
+- Complex @ mention scenarios including @everyone mentions
+- @ mentions within lists and formatted text
+- Round-trip Lexical JSON import/export functionality
+- Integration with bold, italic, underline, strikethrough, and hyperlinks
 
-```kotlin
-implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc12")
+## Platform Support
+
+This library supports all Compose Multiplatform targets:
+- **Android** - Full feature support
+- **Desktop** (JVM) - Complete functionality including focus management
+- **iOS** - Native iOS integration
+- **JavaScript** - Web deployment ready
+- **WASM** - WebAssembly support for modern web apps
+
+## How to Use This Demo in Your Project
+
+To integrate the @ mentions functionality from the KJ Communities demo into your own application, copy these modular components:
+
+### Core @ Mention Components
+
+**Essential Files:**
+```
+com/kjcommunities/KJRichTextEditorWithMentions.kt    # Main wrapper component
+com/kjcommunities/KJMentionDropdown.kt               # Autocomplete dropdown UI
 ```
 
-## Compatibility
-
-[![Maven Central](https://img.shields.io/maven-central/v/com.mohamedrejeb.richeditor/richeditor-compose/1.0.0-rc12)](https://search.maven.org/search?q=g:%22com.mohamedrejeb.richeditor%22%20AND%20a:%22richeditor-compose%22)
-
-| Kotlin version | Compose version | Compose Rich Editor version |
-|----------------|-----------------|-----------------------------|
-| 2.1.10         | 1.8.0-alpha03   | 1.0.0-rc12                  |
-| 2.1.10         | 1.7.3           | 1.0.0-rc11                  |
-| 2.0.21         | 1.7.0           | 1.0.0-rc10                  |
-| 2.0.20         | 1.6.11          | 1.0.0-rc09                  |
-| 2.0.10         | 1.6.11          | 1.0.0-rc06                  |
-| 2.0.0          | 1.6.10          | 1.0.0-rc05-k2               |
-| 1.9.24         | 1.6.10          | 1.0.0-rc05                  |
-
-## Quick Start
-
-#### RichTextState
-
-Use `RichTextEditor` composable to create a rich text editor.
-
-The `RichTextEditor` composable requires a `RichTextState` to manage the editor's state.
-
-To create a `RichTextState`, use the `rememberRichTextState` function:
-
+**Data Model:**
 ```kotlin
-val state = rememberRichTextState()
-
-RichTextEditor(
-    state = state,
+// Add this data class to your project
+data class MentionUser(
+    val id: String,
+    val fullName: String,
+    val imageUrl: String?
 )
 ```
 
-#### Styling Spans
+### Optional Formatting Components
 
-To style spans, `RichTextState` provides `toggleSpanStyle` method:
-
-```kotlin
-// Toggle a span style.
-richTextState.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
+**For Complete Rich Text Toolbar:**
+```
+com/kjcommunities/KJDemoPanel.kt                     # Formatting toolbar
+com/kjcommunities/KJDemoPanelButton.kt              # Reusable toolbar buttons
+com/kjcommunities/KJDemoLinkDialog.kt               # Link creation dialog
+com/kjcommunities/icons/CustomIcons.kt              # H1, H2, indent icons
 ```
 
-To get the current span style of the selection, use `RichTextState.currentSpanStyle`:
-
-```kotlin
-// Get the current span style.
-val currentSpanStyle = richTextState.currentSpanStyle
-val isBold = currentSpanStyle.fontWeight == FontWeight.Bold
+**For Full Demo Interface:**
+```
+com/kjcommunities/KJDemoScreen.kt                    # Complete chat-like demo
 ```
 
-#### Styling Paragraphs
+### Integration Steps
 
-To style paragraphs, `RichTextState` provides `toggleParagraphStyle` method:
+1. **Copy the Core Files**: Add `KJRichTextEditorWithMentions.kt` and `KJMentionDropdown.kt` to your project
+
+2. **Replace the Standard Editor**:
+   ```kotlin
+   // Instead of RichTextEditor
+   RichTextEditor(state = richTextState, ...)
+   
+   // Use the mentions-enabled version
+   KJRichTextEditorWithMentions(
+       state = richTextState,
+       users = yourUserList,
+       placeholder = { Text("Type a message...") }
+   )
+   ```
+
+3. **Configure @ Mention Styling**:
+   ```kotlin
+   // Set global alpha name for your community
+   RichSpanStyle.Mention.globalAlphaName = "yourcommunityname"
+   
+   // Configure mention appearance
+   richTextState.config.mentionColor = Color(0xFF0084ff) // Blue mentions
+   richTextState.config.mentionTextDecoration = TextDecoration.None
+   ```
+
+4. **Provide User Data**: Supply your `List<MentionUser>` with user IDs, names, and optional avatar URLs
+
+5. **Handle Lexical Export** (Optional):
+   ```kotlin
+   val lexicalJson = richTextState.getLexicalText() // Export for backend
+   richTextState.setLexicalText(lexicalJson)        // Import from backend
+   ```
+
+### Dependencies Required
+
+The @ mention functionality requires:
 
 ```kotlin
-// Toggle a paragraph style.
-richTextState.toggleParagraphStyle(ParagraphStyle(textAlign = TextAlign.Center))
-```
-
-To get the current paragraph style of the selection, use `RichTextState.currentParagraphStyle`:
-
-```kotlin
-// Get the current paragraph style.
-val currentParagraphStyle = richTextState.currentParagraphStyle
-val isCentered = currentParagraphStyle.textAlign == TextAlign.Center
-```
-
-#### Add links
-
-To add links, `RichTextState` provides `addLink` method:
-
-```kotlin
-// Add link after selection.
-richTextState.addLink(
-    text = "Compose Rich Editor",
-    url = "https://github.com/MohamedRejeb/Compose-Rich-Editor"
-)
-```
-
-To get if the current selection is a link, use `RichTextState.isLink`:
-
-```kotlin
-// Get if the current selection is a link.
-val isLink = richTextState.isLink
-```
-
-By default, links will be opened by your platform's `UriHandler`, if however you want to
-handle the links on your own, you can override the composition local as such:
-
-```kotlin
-val myUriHandler by remember {
-    mutableStateOf(object : UriHandler {
-        override fun openUri(uri: String) {
-            // Handle the clicked link however you want
-        }
-    })
+// Add JitPack repository to your root build.gradle.kts
+repositories {
+    maven { url = uri("https://jitpack.io") }
 }
-CompositionLocalProvider(LocalUriHandler provides myUriHandler) {
-    RichText(
-        state = richTextState,
-        modifier = Modifier.fillMaxWidth()
-    )
-}
+
+// Image loading for user avatars
+implementation("io.coil-kt.coil3:coil-compose:3.0.0")
+
+// Enhanced rich text editor with @ mentions support
+implementation("com.github.Kajabi:Android-Kajabi-Rich-Text:1.0.0-mentions-alpha01")
 ```
 
-#### Add Code Blocks
+**Note**: This enhanced version includes all the original rich text editor functionality plus the @ mentions features. You don't need to include the original `com.mohamedrejeb.richeditor` dependency.
 
-To add code blocks, `RichTextState` provides `toggleCodeSpan` method:
+### Customization Options
 
-```kotlin
-// Toggle code span.
-richTextState.toggleCodeSpan()
-```
+The components are designed to be highly customizable:
 
-To get if the current selection is a code block, use `RichTextState.isCodeSpan`:
+- **Dropdown Appearance**: Modify colors, sizing, and layout in `KJMentionDropdown.kt`
+- **Search Behavior**: Adjust minimum character requirements and result limits
+- **Avatar Handling**: Customize fallback icons and image loading behavior  
+- **Mention Styling**: Configure colors, decorations, and visual appearance
+- **Positioning Logic**: Fine-tune dropdown positioning for your UI layout
 
-```kotlin
-// Get if the current selection is a code span.
-val isCodeSpan = richTextState.isCodeSpan
-```
+## Advanced Features
 
-#### Ordered and Unordered Lists
+### Atomic Mention Behavior
+@ mentions are implemented with atomic behavior at the library level - users cannot partially edit mention text. They must either leave mentions intact or delete them entirely.
 
-You can add ordered and unordered lists using `RichTextState`:
+### Lexical JSON Compatibility
+Full compatibility with Lexical editor JSON format enables seamless data exchange with web-based Lexical editors and backend storage systems.
 
-```kotlin
-// Toggle ordered list.
-richTextState.toggleOrderedList()
+### Intelligent Autocomplete
+The mention system includes smart filtering with configurable minimum character requirements (1 char for <100 users, 2 chars for >100 users) and result limiting for optimal performance.
 
-// Toggle unordered list.
-richTextState.toggleUnorderedList()
-```
+### Cross-Platform Considerations
+- **Desktop**: Includes focus management to prevent editor focus loss when clicking toolbar buttons
+- **Mobile**: Intelligent dropdown positioning prevents keyboard obstruction
+- **Web**: Full WASM compatibility for modern web deployment
 
-You can get if the current selection is an ordered or unordered list, using `RichTextState`:
+## Publishing New Versions
 
-```kotlin
-// Get if the current selection is an ordered list.
-val isOrderedList = richTextState.isOrderedList
+This project uses **JitPack** for easy publishing. To release a new version:
 
-// Get if the current selection is an unordered list.
-val isUnorderedList = richTextState.isUnorderedList
-```
+1. **Update the version** in `convention-plugins/src/main/kotlin/root.publication.gradle.kts`:
+   ```kotlin
+   version = System.getenv("VERSION") ?: "1.0.0-mentions-alpha02"  // Increment version
+   ```
 
-#### Customizing the rich text configuration
+2. **Commit and push** your changes
 
-Some of the rich text editor's features can be customized, such as the color of the links and the code blocks.
+3. **Create a GitHub release**:
+   - Go to your GitHub repository
+   - Click "Releases" → "Create a new release"
+   - Tag version: `1.0.0-mentions-alpha02` (should match the version above)
+   - Release title: `v1.0.0-mentions-alpha02`
+   - Add release notes describing changes
 
-```kotlin
-richTextState.config.linkColor = Color.Blue
-richTextState.config.linkTextDecoration = TextDecoration.Underline
-richTextState.config.codeSpanColor = Color.Yellow
-richTextState.config.codeSpanBackgroundColor = Color.Transparent
-richTextState.config.codeSpanStrokeColor = Color.LightGray
-```
+4. **JitPack will automatically build** the release within a few minutes
 
-#### HTML import and export
+5. **Users can then depend on the new version**:
+   ```kotlin
+   implementation("com.github.Kajabi:Android-Kajabi-Rich-Text:1.0.0-mentions-alpha02")
+   ```
 
-To convert HTML to `RichTextState`, use `RichTextState.setHtml` method:
+### Alternative: GitHub Packages
 
-```kotlin
-val html = "<p><b>Compose Rich Editor</b></p>"
-richTextState.setHtml(html)
-```
+If you prefer GitHub Packages instead of JitPack, uncomment the publishing configuration in the gradle files and set up GitHub Actions with your repository secrets.
 
-To insert HTML content at a specific position, use `RichTextState.insertHtml` method:
+---
 
-```kotlin
-val html = "<b>inserted content</b>"
-richTextState.insertHtml(html, position = 5)
-```
-
-To convert `RichTextState` to HTML, use `RichTextState.toHtml` method:
-
-```kotlin
-val html = richTextState.toHtml()
-```
-
-#### Markdown import and export
-
-To convert Markdown to `RichTextState`, use `RichTextState.setMarkdown` method:
-
-```kotlin
-val markdown = "**Compose** *Rich* Editor"
-richTextState.setMarkdown(markdown)
-```
-
-To insert Markdown content at a specific position, use `RichTextState.insertMarkdown` method:
-
-```kotlin
-val markdown = "**inserted** *content*"
-richTextState.insertMarkdown(markdown, position = 5)
-```
-
-To convert `RichTextState` to Markdown, use `RichTextState.toMarkdown` method:
-
-```kotlin
-val markdown = richTextState.toMarkdown()
-```
-
-Check out Compose Rich Editor's [full documentation](https://mohamedrejeb.github.io/compose-rich-editor/) for more details.
-
-## Web live demo
-You can try out the web demo [here](https://compose-richeditor.netlify.app/).
-
-## Contribution
-If you've found an error in this sample, please file an issue. <br>
-Feel free to help out by sending a pull request :heart:.
-
-[Code of Conduct](https://github.com/MohamedRejeb/Compose-Rich-Editor/blob/main/CODE_OF_CONDUCT.md)
-
-## Find this library useful? :heart:
-Support it by joining __[stargazers](https://github.com/MohamedRejeb/Compose-Rich-Editor/stargazers)__ for this repository. :star: <br>
-Also, __[follow me](https://github.com/MohamedRejeb)__ on GitHub for more libraries! 🤩
-
-You can always <a href="https://www.buymeacoffee.com/MohamedRejeb" target="_blank"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=MohamedRejeb&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a>
-
-# License
-```markdown
-Copyright 2023 Mohamed Rejeb
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+This implementation provides a production-ready @ mention system that can be easily integrated into existing Compose applications while maintaining the flexibility to customize appearance and behavior to match your application's design requirements.

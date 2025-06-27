@@ -15,10 +15,6 @@ import com.mohamedrejeb.richeditor.ui.material3.RichText
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
-    navigateToRichEditor: () -> Unit,
-    navigateToHtmlEditor: () -> Unit,
-    navigateToMarkdownEditor: () -> Unit,
-    navigateToSlack: () -> Unit,
     navigateToKjCommunitiesSlack: () -> Unit,
 ) {
     val richTextState = rememberRichTextState()
@@ -61,38 +57,6 @@ fun HomeScreen(
 
             item {
                 Spacer(modifier = Modifier.height(20.dp))
-            }
-
-            item {
-                Button(
-                    onClick = navigateToRichEditor,
-                ) {
-                    Text("Rich Text Editor Demo")
-                }
-            }
-
-            item {
-                Button(
-                    onClick = navigateToHtmlEditor,
-                ) {
-                    Text("HTML Editor Demo")
-                }
-            }
-
-            item {
-                Button(
-                    onClick = navigateToMarkdownEditor,
-                ) {
-                    Text("Markdown Editor Demo")
-                }
-            }
-
-            item {
-                Button(
-                    onClick = navigateToSlack,
-                ) {
-                    Text("Slack Clone Demo")
-                }
             }
 
             item {
