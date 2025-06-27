@@ -25,6 +25,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,7 +33,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.Send
-
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
@@ -54,11 +55,21 @@ import com.mohamedrejeb.richeditor.common.generated.resources.Res
 import com.mohamedrejeb.richeditor.common.generated.resources.kajabi_logo
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
+import com.mohamedrejeb.richeditor.model.RichSpanStyle
 import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+
+/**
+ * User data model for mentions
+ */
+data class MentionUser(
+    val id: String,
+    val fullName: String,
+    val imageUrl: String?
+)
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalRichTextApi::class, ExperimentalResourceApi::class)
 @Composable
@@ -74,10 +85,27 @@ fun KJDemoScreen(
 
     val openLinkDialog = remember { mutableStateOf(false) }
 
+    // Sample mention users from adding_at_mentions_support.md
+    val mentionUsers = remember {
+        listOf(
+            MentionUser("bad3dcf6-5a42-4eb6-a296-5e4d0b5fcead", "Juan Guzman", "https://avatar.iran.liara.run/public/boy?username=Ash"),
+            MentionUser("e479cf04-efb6-48ff-a6d2-b2c576e787ec", "Juan Guz", null),
+            MentionUser("d4762846-3199-4d07-a361-b92e7796b964", "Juan Guzman Admin Two", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1d", "Juan Guzman Admin Three", "https://avatar.iran.liara.run/public/boy?username=Ash"),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd13", "Patrick MacDowell", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1e", "Patrick", "https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250"),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1f", "Pat", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1g", "BOB", "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png")
+        )
+    }
+
     // Sample mention data from adding_at_mentions_support.md line 19
     val sampleMentionData = """{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Alrighty, let's test some @ mentioning!","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"First, this one @ mentions someone who does ","type":"text","version":1},{"detail":0,"format":9,"mode":"normal","style":"","text":"not","type":"text","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":" exist, like @bob 👋 Hi Bob! ","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Next, this mentions someone who does exist, ","type":"text","version":1},{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Patrick (member)","type":"mention","version":1,"mentionName":"@Patrick (member)","mentionedUserId":"f6720dfe-0c11-44c9-bb4b-4d39a6cf4d03","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" ","type":"text","version":1},{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Etienne Tester 3","type":"mention","version":1,"mentionName":"@Etienne Tester 3","mentionedUserId":"90ebb878-7ed8-4b27-8ebc-ce95216cdb85","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" 😃 Hi Etienne and Patrick!","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Next, let's test @ mentioning people in an unordered list:","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"children":[{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Patrick (member)","type":"mention","version":1,"mentionName":"@Patrick (member)","mentionedUserId":"f6720dfe-0c11-44c9-bb4b-4d39a6cf4d03","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"value":1},{"children":[{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Etienne Lawlor","type":"mention","version":1,"mentionName":"@Etienne Lawlor","mentionedUserId":"958abd34-7e2a-4327-9755-d7c02fb6a8fa","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"value":2},{"children":[{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Etienne Tester 3","type":"mention","version":1,"mentionName":"@Etienne Tester 3","mentionedUserId":"90ebb878-7ed8-4b27-8ebc-ce95216cdb85","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"value":3},{"children":[{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Patrick (member)","type":"mention","version":1,"mentionName":"@Patrick (member)","mentionedUserId":"f6720dfe-0c11-44c9-bb4b-4d39a6cf4d03","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"value":4}],"direction":null,"format":"","indent":0,"type":"list","version":1,"listType":"bullet","start":1,"tag":"ul"},{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Finally let's test this dreaded ","type":"text","version":1},{"detail":1,"format":0,"mode":"segmented","style":"","text":"@everyone","type":"mention","version":1,"mentionName":"@everyone","mentionedUserId":"everyone","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" tag to see how much PN carnage it causes. ","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Also, FYI, I added in some emojis just to make this more complex. ","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Also, let's do a ","type":"text","version":1},{"detail":0,"format":1,"mode":"normal","style":"","text":"bold","type":"text","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":", ","type":"text","version":1},{"detail":0,"format":2,"mode":"normal","style":"","text":"italics","type":"text","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":", ","type":"text","version":1},{"detail":0,"format":8,"mode":"normal","style":"","text":"underline","type":"text","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":", ","type":"text","version":1},{"detail":0,"format":4,"mode":"normal","style":"","text":"strikethrough","type":"text","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":", and ","type":"text","version":1},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"hyperlink","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"link","version":1,"rel":null,"target":"_blank","title":null,"url":"https://www.google.com"},{"detail":0,"format":0,"mode":"normal","style":"","text":"... just because.","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Also, here's an edit! ","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}"""
 
     LaunchedEffect(Unit) {
+        // Set global alphaName for mentions
+        RichSpanStyle.Mention.globalAlphaName = "pgmacdesignscommunity"
+        
         richTextState.config.linkColor = Color(0xFF00C851) // Green color for links
         richTextState.config.linkTextDecoration = TextDecoration.None
         richTextState.config.codeSpanColor = Color(0xFFd7882d)
@@ -201,6 +229,15 @@ fun KJDemoScreen(
                                         color = Color.White,
                                         modifier = Modifier
                                             .fillMaxWidth()
+                                            .pointerInput(message) {
+                                                detectTapGestures(
+                                                    onLongPress = {
+                                                        // Copy the lexical text to clipboard
+                                                        val lexicalText = message.getLexicalText()
+                                                        clipboardManager.setText(AnnotatedString(lexicalText))
+                                                    }
+                                                )
+                                            }
                                     )
                                 }
                             }
@@ -225,8 +262,9 @@ fun KJDemoScreen(
                                 .padding(horizontal = 20.dp)
                         )
 
-                        RichTextEditor(
+                        KJRichTextEditorWithMentions(
                             state = richTextState,
+                            users = mentionUsers,
                             placeholder = {
                                 Text(
                                     text = "Message #compose-rich-text-editor",

@@ -615,19 +615,43 @@ The `RichSpanStyle.Mention` class should expose the following properties with ge
 "list_of_users": [
   {
     "id": "bad3dcf6-5a42-4eb6-a296-5e4d0b5fcead",
-    "fullName": "Juan Guzman"
+    "fullName": "Juan Guzman",
+    "imageUrl": "https://avatar.iran.liara.run/public/boy?username=Ash"
   },
   {
     "id": "e479cf04-efb6-48ff-a6d2-b2c576e787ec",
-    "fullName": "Juan Guz"
+    "fullName": "Juan Guz",
+    "imageUrl": null
   },
   {
     "id": "d4762846-3199-4d07-a361-b92e7796b964",
-    "fullName": "Juan Guzman Admin Two"
+    "fullName": "Juan Guzman Admin Two",
+    "imageUrl": null
   },
   {
     "id": "99e4d5ff-05c5-4159-a202-6c0d97eddd1d",
-    "fullName": "Juan Guzman Admin Three"
+    "fullName": "Juan Guzman Admin Three",
+    "imageUrl": "https://avatar.iran.liara.run/public/boy?username=Ash
+  },
+  {
+    "id": "99e4d5ff-05c5-4159-a202-6c0d97eddd13",
+    "fullName": "Patrick MacDowell",
+    "imageUrl": null
+  },
+  {
+    "id": "99e4d5ff-05c5-4159-a202-6c0d97eddd1e",
+    "fullName": "Patrick",
+    "imageUrl": "https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250"
+  },
+  {
+    "id": "99e4d5ff-05c5-4159-a202-6c0d97eddd1f",
+    "fullName": "Pat",
+    "imageUrl": null
+  },
+  {
+    "id": "99e4d5ff-05c5-4159-a202-6c0d97eddd1g",
+    "fullName": "BOB",
+    "imageUrl": "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
   }
 ]
 ```
