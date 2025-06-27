@@ -85,7 +85,7 @@ fun KJDemoScreen(
 
     val openLinkDialog = remember { mutableStateOf(false) }
 
-    // Sample mention users from adding_at_mentions_support.md
+    // Sample mention users from adding_at_mentions_support.md (Replace with your own users)
     val mentionUsers = remember {
         listOf(
             MentionUser("bad3dcf6-5a42-4eb6-a296-5e4d0b5fcead", "Juan Guzman", "https://avatar.iran.liara.run/public/boy?username=Ash"),
@@ -95,6 +95,18 @@ fun KJDemoScreen(
             MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd13", "Patrick MacDowell", null),
             MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1e", "Patrick", "https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250"),
             MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1f", "Pat", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1f", "Pat 2", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1g", "Pat 3", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1h", "Pat 4", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1i", "Pat 5", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1j", "Pat 6", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1k", "Pat 7", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1l", "Pat 8", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1m", "Pat 9", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1n", "Pat 10", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1o", "Pat 11", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1p", "Pat 12", null),
+            MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1q", "Pat 13", null),
             MentionUser("99e4d5ff-05c5-4159-a202-6c0d97eddd1g", "BOB", "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png")
         )
     }
