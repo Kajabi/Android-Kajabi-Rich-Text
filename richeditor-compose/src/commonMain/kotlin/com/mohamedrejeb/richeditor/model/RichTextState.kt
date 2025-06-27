@@ -2353,14 +2353,14 @@ public class RichTextState internal constructor(
                 removeSliceIndex = true,
             )
 
-            // If the new paragraph is empty apply style depending on the config
+            // Handle list item creation and exit logic
             if (tempTextFieldValue.selection.collapsed && newParagraph.isEmpty()) {
                 val newParagraphFirstRichSpan = newParagraph.getFirstNonEmptyChild()
 
                 val isSelectionAtNewRichSpan =
                     newParagraphFirstRichSpan?.textRange?.min == tempTextFieldValue.selection.min - 1
 
-                // Check if the cursor is at the new paragraph and if it's an empty list item
+                // Check if we should exit the list (only if current paragraph is empty)
                 if (
                     config.exitListOnEmptyItem &&
                     isSelectionAtNewRichSpan &&
@@ -2391,6 +2391,17 @@ public class RichTextState internal constructor(
                 ) {
                     newParagraphFirstRichSpan.spanStyle = currentSpanStyle
                     newParagraphFirstRichSpan.richSpanStyle = currentRichSpanStyle
+                }
+            }
+            
+            // Ensure that if we're in a list and the current paragraph has content,
+            // the new paragraph maintains proper list formatting
+            if (richSpan.paragraph.type is ConfigurableListLevel && richSpan.paragraph.isNotEmpty()) {
+                // Make sure the new paragraph type is properly set as a list item
+                // The slice method should have already set this via getNextParagraphType(),
+                // but we ensure it here for robustness
+                if (newParagraph.type !is ConfigurableListLevel) {
+                    newParagraph.type = richSpan.paragraph.type.getNextParagraphType()
                 }
             }
 
