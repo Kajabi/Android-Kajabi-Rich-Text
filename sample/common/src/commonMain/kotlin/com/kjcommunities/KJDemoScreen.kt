@@ -74,6 +74,9 @@ fun KJDemoScreen(
 
     val openLinkDialog = remember { mutableStateOf(false) }
 
+    // Sample mention data from adding_at_mentions_support.md line 19
+    val sampleMentionData = """{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Alrighty, let's test some @ mentioning!","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"First, this one @ mentions someone who does ","type":"text","version":1},{"detail":0,"format":9,"mode":"normal","style":"","text":"not","type":"text","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":" exist, like @bob 👋 Hi Bob! ","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Next, this mentions someone who does exist, ","type":"text","version":1},{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Patrick (member)","type":"mention","version":1,"mentionName":"@Patrick (member)","mentionedUserId":"f6720dfe-0c11-44c9-bb4b-4d39a6cf4d03","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" ","type":"text","version":1},{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Etienne Tester 3","type":"mention","version":1,"mentionName":"@Etienne Tester 3","mentionedUserId":"90ebb878-7ed8-4b27-8ebc-ce95216cdb85","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" 😃 Hi Etienne and Patrick!","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Next, let's test @ mentioning people in an unordered list:","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"children":[{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Patrick (member)","type":"mention","version":1,"mentionName":"@Patrick (member)","mentionedUserId":"f6720dfe-0c11-44c9-bb4b-4d39a6cf4d03","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"value":1},{"children":[{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Etienne Lawlor","type":"mention","version":1,"mentionName":"@Etienne Lawlor","mentionedUserId":"958abd34-7e2a-4327-9755-d7c02fb6a8fa","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"value":2},{"children":[{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Etienne Tester 3","type":"mention","version":1,"mentionName":"@Etienne Tester 3","mentionedUserId":"90ebb878-7ed8-4b27-8ebc-ce95216cdb85","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"value":3},{"children":[{"detail":1,"format":0,"mode":"segmented","style":"","text":"@Patrick (member)","type":"mention","version":1,"mentionName":"@Patrick (member)","mentionedUserId":"f6720dfe-0c11-44c9-bb4b-4d39a6cf4d03","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"value":4}],"direction":null,"format":"","indent":0,"type":"list","version":1,"listType":"bullet","start":1,"tag":"ul"},{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Finally let's test this dreaded ","type":"text","version":1},{"detail":1,"format":0,"mode":"segmented","style":"","text":"@everyone","type":"mention","version":1,"mentionName":"@everyone","mentionedUserId":"everyone","alphaName":"pgmacdesignscommunity"},{"detail":0,"format":0,"mode":"normal","style":"","text":" tag to see how much PN carnage it causes. ","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Also, FYI, I added in some emojis just to make this more complex. ","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Also, let's do a ","type":"text","version":1},{"detail":0,"format":1,"mode":"normal","style":"","text":"bold","type":"text","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":", ","type":"text","version":1},{"detail":0,"format":2,"mode":"normal","style":"","text":"italics","type":"text","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":", ","type":"text","version":1},{"detail":0,"format":8,"mode":"normal","style":"","text":"underline","type":"text","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":", ","type":"text","version":1},{"detail":0,"format":4,"mode":"normal","style":"","text":"strikethrough","type":"text","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":", and ","type":"text","version":1},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"hyperlink","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"link","version":1,"rel":null,"target":"_blank","title":null,"url":"https://www.google.com"},{"detail":0,"format":0,"mode":"normal","style":"","text":"... just because.","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Also, here's an edit! ","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}"""
+
     LaunchedEffect(Unit) {
         richTextState.config.linkColor = Color(0xFF00C851) // Green color for links
         richTextState.config.linkTextDecoration = TextDecoration.None
@@ -82,6 +85,9 @@ fun KJDemoScreen(
         richTextState.config.codeSpanStrokeColor = Color(0xFF494b4d)
         richTextState.config.unorderedListIndent = 40
         richTextState.config.orderedListIndent = 50
+        // Configure mention styling
+        richTextState.config.mentionColor = Color(0xFF0084ff) // Blue color for mentions
+        richTextState.config.mentionTextDecoration = TextDecoration.None
     }
 
     Box(
@@ -103,7 +109,31 @@ fun KJDemoScreen(
                             }
                         },
                         actions = {
-                            // Actions removed for cleaner demo interface
+                            IconButton(
+                                onClick = {
+                                    // Create a new RichTextState with the sample data and add it as a sent message
+                                    val sampleMessageState = RichTextState()
+                                    // Apply the same configuration as the main state
+                                    sampleMessageState.config.linkColor = Color(0xFF00C851)
+                                    sampleMessageState.config.linkTextDecoration = TextDecoration.None
+                                    sampleMessageState.config.codeSpanColor = Color(0xFFd7882d)
+                                    sampleMessageState.config.codeSpanBackgroundColor = Color.Transparent
+                                    sampleMessageState.config.codeSpanStrokeColor = Color(0xFF494b4d)
+                                    sampleMessageState.config.unorderedListIndent = 40
+                                    sampleMessageState.config.orderedListIndent = 50
+                                    sampleMessageState.config.mentionColor = Color(0xFF0084ff)
+                                    sampleMessageState.config.mentionTextDecoration = TextDecoration.None
+                                    // Set the lexical text
+                                    sampleMessageState.setLexicalText(sampleMentionData)
+                                    messages.add(sampleMessageState)
+                                }
+                            ) {
+                                Icon(
+                                    Icons.Outlined.PlayArrow,
+                                    contentDescription = "Send Sample Mentions",
+                                    tint = Color.White
+                                )
+                            }
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = Color(0xFF1a1d21),
@@ -212,33 +242,50 @@ fun KJDemoScreen(
                             textStyle = LocalTextStyle.current.copy(fontFamily = FontFamily.Monospace),
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .heightIn(min = 60.dp, max = 200.dp)
                                 .padding(8.dp)
                         )
 
-                        Box(
+                        Row(
                             modifier = Modifier
-                                .padding(8.dp)
-                                .align(Alignment.End)
-                                .clip(RoundedCornerShape(10.dp))
-                                .clickable(
-                                    onClick = {
-                                        messages.add(richTextState.copy())
-                                        richTextState.clear()
-                                    },
-                                    enabled = true,
-                                    role = Role.Button,
-                                ),
-                            contentAlignment = Alignment.Center
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.End
                         ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Outlined.Send,
-                                contentDescription = "Send",
-                                tint = Color.White,
+                            Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(10.dp))
-                                    .background(Color(0xFF007a5a))
-                                    .padding(6.dp)
-                            )
+                                    .clickable(
+                                        onClick = {
+                                            val messageState = richTextState.copy()
+                                            // Apply configuration to the copied message state
+                                            messageState.config.linkColor = Color(0xFF00C851)
+                                            messageState.config.linkTextDecoration = TextDecoration.None
+                                            messageState.config.codeSpanColor = Color(0xFFd7882d)
+                                            messageState.config.codeSpanBackgroundColor = Color.Transparent
+                                            messageState.config.codeSpanStrokeColor = Color(0xFF494b4d)
+                                            messageState.config.unorderedListIndent = 40
+                                            messageState.config.orderedListIndent = 50
+                                            messageState.config.mentionColor = Color(0xFF0084ff)
+                                            messageState.config.mentionTextDecoration = TextDecoration.None
+                                            messages.add(messageState)
+                                            richTextState.clear()
+                                        },
+                                        enabled = true,
+                                        role = Role.Button,
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Outlined.Send,
+                                    contentDescription = "Send",
+                                    tint = Color.White,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(Color(0xFF007a5a))
+                                        .padding(6.dp)
+                                )
+                            }
                         }
                     }
                 }

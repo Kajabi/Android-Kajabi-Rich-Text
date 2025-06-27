@@ -115,4 +115,23 @@ public data class LexicalListItemNode(
     override val type: String = "listitem",
     override val version: Int = 1,
     val value: Int
+) : LexicalNode
+
+/**
+ * Represents a mention node
+ */
+public data class LexicalMentionNode(
+    val detail: Int = 1,
+    val formatFlags: Int = 0, // Same format flags as LexicalTextNode
+    val mode: String = "segmented",
+    val style: String = "",
+    val text: String, // The display text like "@Patrick (member)"
+    val mentionName: String, // Same as text for compatibility
+    val mentionedUserId: String, // Unique identifier for the mentioned user
+    val alphaName: String, // Context/community identifier
+    override val type: String = "mention",
+    override val version: Int = 1,
+    override val direction: String = "ltr",
+    override val format: String = "",
+    override val indent: Int = 0
 ) : LexicalNode 

@@ -127,6 +127,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 "link" -> parseLinkNode(jsonString)
                 "list" -> parseListNode(jsonString)
                 "listitem" -> parseListItemNode(jsonString)
+                "mention" -> parseMentionNode(jsonString)
                 else -> null
             }
         } catch (e: Exception) {
@@ -267,6 +268,21 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
         )
     }
 
+    private fun parseMentionNode(jsonString: String): LexicalMentionNode {
+        return LexicalMentionNode(
+            detail = extractIntField(jsonString, "detail") ?: 1,
+            formatFlags = extractIntField(jsonString, "format") ?: 0,
+            mode = extractStringField(jsonString, "mode") ?: "segmented",
+            style = extractStringField(jsonString, "style") ?: "",
+            text = extractStringField(jsonString, "text") ?: "",
+            mentionName = extractStringField(jsonString, "mentionName") ?: "",
+            mentionedUserId = extractStringField(jsonString, "mentionedUserId") ?: "",
+            alphaName = extractStringField(jsonString, "alphaName") ?: "",
+            type = "mention",
+            version = extractIntField(jsonString, "version") ?: 1
+        )
+    }
+
     /**
      * Converts a LexicalRoot back to RichTextState
      */
@@ -359,9 +375,8 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 val allListItems = collectListItems(node)
                 
                 allListItems.fastForEach { (listItem, listType) ->
-                    // Only create paragraphs for list items that have text content
-                    val textChildren = listItem.children.filterIsInstance<LexicalTextNode>()
-                    if (textChildren.isNotEmpty()) {
+                    // Create paragraphs for list items that have any content (text, mentions, etc.)
+                    if (listItem.children.isNotEmpty()) {
                         val richParagraph = RichParagraph()
                         // Convert 0-based indent to 1-based level (add 1)
                         val level = listItem.indent + 1
@@ -369,7 +384,8 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                             "number" -> OrderedList(number = listItem.value, initialLevel = level)
                             else -> UnorderedList(initialLevel = level)
                         }
-                        richParagraph.children.addAll(convertLexicalNodesToRichSpans(textChildren, richParagraph))
+                        // Convert all children (text, mentions, etc.) to rich spans
+                        richParagraph.children.addAll(convertLexicalNodesToRichSpans(listItem.children, richParagraph))
                         paragraphs.add(richParagraph)
                     }
                 }
@@ -429,6 +445,18 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                     richSpan.text = childSpans.joinToString("") { it.text }
                 }
                 
+                listOf(richSpan)
+            }
+            
+            is LexicalMentionNode -> {
+                val richSpan = RichSpan(paragraph = paragraph)
+                richSpan.text = node.text
+                richSpan.richSpanStyle = RichSpanStyle.Mention(
+                    id = node.mentionedUserId,
+                    fullName = node.mentionName.removePrefix("@"),
+                    alphaName = if (node.alphaName.isNotEmpty()) node.alphaName else null
+                )
+                richSpan.spanStyle = convertFormatFlagsToSpanStyle(node.formatFlags)
                 listOf(richSpan)
             }
             
@@ -756,6 +784,27 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 return nodes
             }
 
+            // Handle mention spans
+            if (richSpanStyle is RichSpanStyle.Mention) {
+                val formatFlags = calculateFormatFlags(richSpan.spanStyle)
+                val mentionText = richSpan.text.ifEmpty { "@${richSpanStyle.fullName}" }
+                val alphaName = richSpanStyle.alphaName ?: RichSpanStyle.Mention.globalAlphaName ?: ""
+                
+                nodes.add(
+                    LexicalMentionNode(
+                        detail = 1,
+                        formatFlags = formatFlags,
+                        mode = "segmented",
+                        style = "",
+                        text = mentionText,
+                        mentionName = mentionText,
+                        mentionedUserId = richSpanStyle.id,
+                        alphaName = alphaName
+                    )
+                )
+                return nodes
+            }
+
             // Handle regular text with formatting
             if (richSpan.text.isNotEmpty()) {
                 val formatFlags = calculateFormatFlags(richSpan.spanStyle)
@@ -924,6 +973,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             is LexicalLinkNode -> serializeLinkNodeToJson(node)
             is LexicalListNode -> serializeListNodeToJson(node)
             is LexicalListItemNode -> serializeListItemNodeToJson(node)
+            is LexicalMentionNode -> serializeMentionNodeToJson(node)
         }
     }
 
@@ -1056,6 +1106,31 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
         jsonBuilder.append("\"value\":${node.value}")
         jsonBuilder.append("}")
         
+        return jsonBuilder.toString()
+    }
+
+    private fun serializeMentionNodeToJson(node: LexicalMentionNode): String {
+        val jsonBuilder = StringBuilder()
+        jsonBuilder.append("{")
+        jsonBuilder.append("\"detail\":${node.detail},")
+        jsonBuilder.append("\"format\":${node.formatFlags},")
+        jsonBuilder.append("\"mode\":\"${node.mode}\",")
+        jsonBuilder.append("\"style\":\"${node.style}\",")
+        jsonBuilder.append("\"text\":\"${escapeJsonString(node.text)}\",")
+        jsonBuilder.append("\"type\":\"${node.type}\",")
+        jsonBuilder.append("\"version\":${node.version},")
+        jsonBuilder.append("\"mentionName\":\"${escapeJsonString(node.mentionName)}\",")
+        jsonBuilder.append("\"mentionedUserId\":\"${escapeJsonString(node.mentionedUserId)}\",")
+        
+        // Only include alphaName if it's not empty (as per requirement to omit if null)
+        if (node.alphaName.isNotEmpty()) {
+            jsonBuilder.append("\"alphaName\":\"${escapeJsonString(node.alphaName)}\"")
+        } else {
+            // Remove trailing comma if alphaName is omitted
+            jsonBuilder.setLength(jsonBuilder.length - 1)
+        }
+        
+        jsonBuilder.append("}")
         return jsonBuilder.toString()
     }
 

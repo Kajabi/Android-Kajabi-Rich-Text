@@ -14,6 +14,10 @@ package com.mohamedrejeb.richeditor.model
  * - `codeSpanBackgroundColor`: Background color for code spans (default: Color.Transparent)
  * - `codeSpanStrokeColor`: Border/stroke color for code spans (default: Color.LightGray)
  * 
+ * **Mention Styling Configuration**:
+ * - `mentionColor`: Sets the color for mention text (default: Color.Blue)
+ * - `mentionTextDecoration`: Controls mention text decoration like underlines (default: TextDecoration.None)
+ * 
  * **List Indentation Configuration**:
  * - `listIndent`: Universal indentation for both ordered and unordered lists (default: 38)
  * - `orderedListIndent`: Specific indentation for numbered lists (default: 38)
@@ -76,6 +80,18 @@ public class RichTextConfig internal constructor(
         }
 
     public var codeSpanStrokeColor: Color = Color.LightGray
+        set(value) {
+            field = value
+            updateText()
+        }
+
+    public var mentionColor: Color = Color.Blue
+        set(value) {
+            field = value
+            updateText()
+        }
+
+    public var mentionTextDecoration: TextDecoration = TextDecoration.None
         set(value) {
             field = value
             updateText()

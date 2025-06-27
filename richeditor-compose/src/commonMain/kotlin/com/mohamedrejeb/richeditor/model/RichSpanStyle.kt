@@ -295,6 +295,57 @@ public interface RichSpanStyle {
         }
     }
 
+    public class Mention(
+        public val id: String,
+        public val fullName: String,
+        public val alphaName: String? = null,
+    ) : RichSpanStyle {
+        override val spanStyle: (RichTextConfig) -> SpanStyle = {
+            SpanStyle(
+                color = it.mentionColor,
+                textDecoration = it.mentionTextDecoration,
+            )
+        }
+
+        override fun DrawScope.drawCustomStyle(
+            layoutResult: TextLayoutResult,
+            textRange: TextRange,
+            richTextConfig: RichTextConfig,
+            topPadding: Float,
+            startPadding: Float,
+        ): Unit = Unit
+
+        override val acceptNewTextInTheEdges: Boolean =
+            false
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Mention) return false
+
+            if (id != other.id) return false
+            if (fullName != other.fullName) return false
+            if (alphaName != other.alphaName) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = id.hashCode()
+            result = 31 * result + fullName.hashCode()
+            result = 31 * result + (alphaName?.hashCode() ?: 0)
+            return result
+        }
+
+        public companion object {
+            /**
+             * Global alphaName setter for all mentions.
+             * When set, this value will be used for new mentions if alphaName is not explicitly provided.
+             * Set to null to omit alphaName from lexical JSON output.
+             */
+            public var globalAlphaName: String? = null
+        }
+    }
+
     public data object Default : RichSpanStyle {
         override val spanStyle: (RichTextConfig) -> SpanStyle =
             { SpanStyle() }
