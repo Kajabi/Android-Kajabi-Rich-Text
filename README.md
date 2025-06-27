@@ -20,6 +20,12 @@ The library is built on a solid foundation with `RichTextState` for state manage
 
 The **KJ Communities Demo** (`/sample/common/src/commonMain/kotlin/com/kjcommunities/`) represents the flagship example of this library in action. It demonstrates a Slack-like chat interface with full @ mention functionality and serves as the primary reference for implementing @ mentions in production applications.
 
+### Live Demo Video
+
+https://github.com/Kajabi/Android-Kajabi-Rich-Text/raw/main/docs/videos/demo.mp4
+
+> **📱 Click the link above to watch the demo video** showing @ mention autocomplete, atomic behavior, and chat-like interface in action!
+
 ### Key Features Demonstrated
 
 - **@ Mention Autocomplete**: Type `@` followed by a name to see filtered user suggestions
@@ -133,7 +139,7 @@ repositories {
 implementation("io.coil-kt.coil3:coil-compose:3.0.0")
 
 // Enhanced rich text editor with @ mentions support
-implementation("com.github.Kajabi:Android-Kajabi-Rich-Text:1.0.0-mentions-alpha01")
+implementation("com.github.Kajabi:Android-Kajabi-Rich-Text:1.2.0")
 ```
 
 **Note**: This enhanced version includes all the original rich text editor functionality plus the @ mentions features. You don't need to include the original `com.mohamedrejeb.richeditor` dependency.
@@ -170,7 +176,7 @@ This project uses **JitPack** for easy publishing. To release a new version:
 
 1. **Update the version** in `convention-plugins/src/main/kotlin/root.publication.gradle.kts`:
    ```kotlin
-   version = System.getenv("VERSION") ?: "1.0.0-mentions-alpha02"  // Increment version
+   version = System.getenv("VERSION") ?: "1.3.0"  // Increment version
    ```
 
 2. **Commit and push** your changes
@@ -178,15 +184,15 @@ This project uses **JitPack** for easy publishing. To release a new version:
 3. **Create a GitHub release**:
    - Go to your GitHub repository
    - Click "Releases" → "Create a new release"
-   - Tag version: `1.0.0-mentions-alpha02` (should match the version above)
-   - Release title: `v1.0.0-mentions-alpha02`
+   - Tag version: `1.3.0` (should match the version above)
+   - Release title: `v1.3.0`
    - Add release notes describing changes
 
 4. **JitPack will automatically build** the release within a few minutes
 
 5. **Users can then depend on the new version**:
    ```kotlin
-   implementation("com.github.Kajabi:Android-Kajabi-Rich-Text:1.0.0-mentions-alpha02")
+   implementation("com.github.Kajabi:Android-Kajabi-Rich-Text:1.3.0")
    ```
 
 ### Alternative: GitHub Packages

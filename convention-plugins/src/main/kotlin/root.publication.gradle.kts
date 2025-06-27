@@ -4,6 +4,6 @@ plugins {
 
 allprojects {
     group = "com.github.Kajabi"
-    version = System.getenv("VERSION") ?: "1.0.0-mentions-alpha01"
+    version = System.getenv("VERSION") ?: "1.2.0"
 }
 
