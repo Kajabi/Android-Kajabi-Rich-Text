@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.IntOffset
@@ -57,7 +58,10 @@ fun KJRichTextEditorWithMentions(
     var mentionSearchText by remember { mutableStateOf("") }
     var mentionStartIndex by remember { mutableStateOf(-1) }
     var editorPosition by remember { mutableStateOf(Offset.Zero) }
+    var editorHeight by remember { mutableStateOf(0) }
     var isFocused by remember { mutableStateOf(false) }
+    val density = LocalDensity.current
+    val configuration = LocalConfiguration.current
 
     // Monitor text changes to detect @ mentions
     LaunchedEffect(state.annotatedString.text, state.selection) {
@@ -114,15 +118,30 @@ fun KJRichTextEditorWithMentions(
                 }
                 .onGloballyPositioned { coordinates ->
                     editorPosition = coordinates.positionInWindow()
+                    editorHeight = coordinates.size.height
                 }
         )
 
         // Mention dropdown popup
         if (showMentionDropdown && mentionSearchText.isNotEmpty()) {
+            // Calculate safe positioning for the dropdown
+            val dropdownMaxHeight = with(density) { 300.dp.roundToPx() }
+            val topMargin = with(density) { 80.dp.roundToPx() } // Account for TopAppBar + margin
+            val availableSpaceAbove = editorPosition.y.toInt() - topMargin
+            
+            // Use available space above, but ensure we don't exceed the dropdown's max height
+            val dropdownOffset = if (availableSpaceAbove >= dropdownMaxHeight) {
+                // Enough space - position dropdown at its full height above the editor
+                -dropdownMaxHeight - with(density) { 8.dp.roundToPx() }
+            } else {
+                // Limited space - position dropdown to use all available space above
+                -availableSpaceAbove + with(density) { 8.dp.roundToPx() }
+            }
+            
             Popup(
                 offset = IntOffset(
                     x = 0,
-                    y = with(LocalDensity.current) { 40.dp.roundToPx() } // Position below current line
+                    y = dropdownOffset
                 ),
                 properties = PopupProperties(
                     dismissOnBackPress = true,
@@ -136,6 +155,9 @@ fun KJRichTextEditorWithMentions(
                 KJMentionDropdown(
                     users = users,
                     searchText = mentionSearchText,
+                    maxHeight = with(density) { 
+                        minOf(300.dp, availableSpaceAbove.toDp()).coerceAtLeast(100.dp)
+                    },
                     onUserSelected = { user ->
                         insertMention(state, user, mentionStartIndex, mentionStartIndex + mentionSearchText.length + 1)
                         showMentionDropdown = false

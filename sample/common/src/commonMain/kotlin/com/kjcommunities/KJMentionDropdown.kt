@@ -49,7 +49,8 @@ fun KJMentionDropdown(
     searchText: String,
     onUserSelected: (MentionUser) -> Unit,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    maxHeight: androidx.compose.ui.unit.Dp = 300.dp
 ) {
     // Filter users based on search text (case insensitive)
     val filteredUsers = remember(users, searchText) {
@@ -71,7 +72,7 @@ fun KJMentionDropdown(
         Card(
             modifier = modifier
                 .width(250.dp)
-                .heightIn(max = 300.dp),
+                .heightIn(max = maxHeight),
             colors = CardDefaults.cardColors(
                 containerColor = Color(0xFF2a2d31)
             ),

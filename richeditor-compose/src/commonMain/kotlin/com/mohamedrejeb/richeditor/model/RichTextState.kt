@@ -1762,6 +1762,25 @@ public class RichTextState internal constructor(
         )
         val previousIndex = startTypeIndex - 1
 
+        // Check if we're trying to type within an atomic span (like a mention)
+        // If so, replace the entire span instead of partial editing
+        val spanAtInsertionPoint = getRichSpanByTextIndex(startTypeIndex)
+        if (spanAtInsertionPoint != null && 
+            !spanAtInsertionPoint.richSpanStyle.acceptNewTextInTheEdges && 
+            spanAtInsertionPoint.text.isNotEmpty() &&
+            startTypeIndex > spanAtInsertionPoint.textRange.min && 
+            startTypeIndex < spanAtInsertionPoint.textRange.max) {
+            
+            // We're typing within an atomic span - replace the entire span with typed text
+            val spanRange = spanAtInsertionPoint.textRange
+            tempTextFieldValue = tempTextFieldValue.copy(
+                text = textFieldValue.text.replaceRange(spanRange.min, spanRange.max, typedText),
+                selection = TextRange(spanRange.min + typedText.length)
+            )
+            // Update the start index for the rest of the method
+            startTypeIndex = spanRange.min
+        }
+
         val activeRichSpan = getOrCreateRichSpanByTextIndex(previousIndex)
 
         if (activeRichSpan != null) {
@@ -1889,13 +1908,44 @@ public class RichTextState internal constructor(
     private fun handleRemovingCharacters() {
         val removedCharsCount = textFieldValue.text.length - tempTextFieldValue.text.length
 
-        val minRemoveIndex =
+        var minRemoveIndex =
             tempTextFieldValue.selection.min
                 .coerceAtLeast(0)
 
-        val maxRemoveIndex =
+        var maxRemoveIndex =
             (minRemoveIndex + removedCharsCount)
                 .coerceAtMost(textFieldValue.text.length)
+
+        // Check for atomic spans (like mentions) that don't accept partial editing
+        // If deletion intersects with such spans, expand the deletion range to include the entire span
+        val initialRange = TextRange(minRemoveIndex, maxRemoveIndex)
+        val affectedSpans = getRichSpanListByTextRange(initialRange)
+        
+        var deletionExpanded = false
+        for (span in affectedSpans) {
+            if (!span.richSpanStyle.acceptNewTextInTheEdges && span.text.isNotEmpty()) {
+                // Check if the deletion partially intersects with this atomic span
+                val spanStart = span.textRange.min
+                val spanEnd = span.textRange.max
+                
+                if ((initialRange.min in span.textRange || initialRange.max - 1 in span.textRange) && 
+                    !(initialRange.min <= spanStart && initialRange.max >= spanEnd)) {
+                    // Partial intersection detected - expand deletion to include entire span
+                    minRemoveIndex = minOf(minRemoveIndex, spanStart)
+                    maxRemoveIndex = maxOf(maxRemoveIndex, spanEnd)
+                    deletionExpanded = true
+                }
+            }
+        }
+
+        // If we expanded the deletion range, update tempTextFieldValue to reflect the expanded deletion
+        if (deletionExpanded) {
+            val expandedText = textFieldValue.text.removeRange(minRemoveIndex, maxRemoveIndex)
+            tempTextFieldValue = tempTextFieldValue.copy(
+                text = expandedText,
+                selection = TextRange(minRemoveIndex)
+            )
+        }
 
         val removeRange = TextRange(minRemoveIndex, maxRemoveIndex)
 
