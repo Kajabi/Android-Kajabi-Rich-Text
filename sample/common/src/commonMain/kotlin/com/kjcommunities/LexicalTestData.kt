@@ -1,6 +1,6 @@
 package com.kjcommunities
 
-import com.mohamedrejeb.richeditor.common.generated.resources.Res
+import com.github.kajabi.common.generated.resources.Res
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
