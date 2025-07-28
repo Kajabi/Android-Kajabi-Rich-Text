@@ -166,17 +166,21 @@ fun KJRichTextEditorWithMentions(
 
         // Mention dropdown popup
         if (showMentionDropdown && mentionSearchText.isNotEmpty()) {
-            val screenHeight = with(density) { configuration.screenHeightDp.dp.toPx() }
             val dropdownHeight = 300.dp
             val dropdownHeightPx = with(density) { dropdownHeight.toPx() }
+            val margin = with(density) { 8.dp.toPx() }
+            
+            // Always position dropdown above the text input area
+            // Anchor it directly above the editor with a small margin
+            val dropdownOffset = -(dropdownHeightPx.toInt() + margin.toInt())
+            
+            // Calculate available space above for the dropdown height
+            // Allow it to extend up even if it overlaps the top panel
             val availableSpaceAbove = editorPosition.y
-            val availableSpaceBelow = screenHeight - editorPosition.y - editorHeight
-
-            // Position dropdown above the editor if there's more space there
-            val dropdownOffset = if (availableSpaceAbove > dropdownHeightPx && availableSpaceAbove > availableSpaceBelow) {
-                -(dropdownHeightPx.toInt() + 8) // 8dp margin
-            } else {
-                editorHeight + with(density) { 8.dp.toPx().toInt() } // 8dp margin
+            val maxDropdownHeight = with(density) { 
+                // Use all available space above, but ensure minimum of 150dp for usability
+                val availableHeight = (availableSpaceAbove - margin * 2).toDp()
+                maxOf(availableHeight, 150.dp).coerceAtMost(dropdownHeight)
             }
 
             Popup(
@@ -187,7 +191,7 @@ fun KJRichTextEditorWithMentions(
                 properties = PopupProperties(
                     dismissOnBackPress = true,
                     dismissOnClickOutside = true,
-                    clippingEnabled = false
+                    clippingEnabled = false // Allow overlapping with top panel
                 ),
                 onDismissRequest = { 
                     showMentionDropdown = false 
@@ -196,9 +200,7 @@ fun KJRichTextEditorWithMentions(
                 KJMentionDropdown(
                     users = users,
                     searchText = mentionSearchText,
-                    maxHeight = with(density) { 
-                        minOf(300.dp, availableSpaceAbove.toDp()).coerceAtLeast(100.dp)
-                    },
+                    maxHeight = maxDropdownHeight,
                     enableDebugLogging = enableDebugLogging,
                     onUserSelected = { user ->
                         insertMention(state, user, mentionStartIndex, mentionStartIndex + mentionSearchText.length + 1, enableDebugLogging)
