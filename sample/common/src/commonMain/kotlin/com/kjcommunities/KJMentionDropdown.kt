@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 
 @Composable
 fun KJMentionDropdown(
@@ -50,20 +51,49 @@ fun KJMentionDropdown(
     onUserSelected: (MentionUser) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    maxHeight: androidx.compose.ui.unit.Dp = 300.dp
+    maxHeight: androidx.compose.ui.unit.Dp = 300.dp,
+    enableDebugLogging: Boolean = false
 ) {
     // Filter users based on search text (case insensitive)
     val filteredUsers = remember(users, searchText) {
+        if (enableDebugLogging) {
+            println("🔍 [MentionFilter] Filtering users with search text: '$searchText'")
+            println("👥 [MentionFilter] Total users available: ${users.size}")
+        }
+        
         if (searchText.isBlank()) {
+            if (enableDebugLogging) {
+                println("🚫 [MentionFilter] Search text is blank - returning empty list")
+            }
             emptyList()
         } else {
             val minChars = if (users.size > 100) 2 else 1
+            if (enableDebugLogging) {
+                println("📏 [MentionFilter] Minimum characters required: $minChars")
+            }
+            
             if (searchText.length < minChars) {
+                if (enableDebugLogging) {
+                    println("❌ [MentionFilter] Search text too short (${searchText.length} < $minChars) - returning empty list")
+                }
                 emptyList()
             } else {
-                users.filter { user ->
-                    user.fullName.contains(searchText, ignoreCase = true)
+                val filtered = users.filter { user ->
+                    val matches = user.fullName.contains(searchText, ignoreCase = true)
+                    if (enableDebugLogging) {
+                        println("🔍 [MentionFilter] User '${user.fullName}' matches '$searchText': $matches")
+                    }
+                    matches
                 }.take(10) // Max 10 suggestions
+                
+                if (enableDebugLogging) {
+                    println("✅ [MentionFilter] Found ${filtered.size} matching users")
+                    filtered.forEach { user ->
+                        println("👤 [MentionFilter] Matched user: ${user.fullName} (ID: ${user.id}, Image: ${user.imageUrl})")
+                    }
+                }
+                
+                filtered
             }
         }
     }
@@ -86,6 +116,7 @@ fun KJMentionDropdown(
                 items(filteredUsers) { user ->
                     MentionUserItem(
                         user = user,
+                        enableDebugLogging = enableDebugLogging,
                         onClick = { onUserSelected(user) }
                     )
                 }
@@ -98,7 +129,8 @@ fun KJMentionDropdown(
 private fun MentionUserItem(
     user: MentionUser,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enableDebugLogging: Boolean = false
 ) {
     Row(
         modifier = modifier
@@ -115,15 +147,47 @@ private fun MentionUserItem(
                 .background(Color(0xFF404449))
         ) {
             if (user.imageUrl != null) {
+                if (enableDebugLogging) {
+                    println("🖼️ [MentionAvatar] Loading image for ${user.fullName}: ${user.imageUrl}")
+                }
+                
                 AsyncImage(
                     model = user.imageUrl,
                     contentDescription = "${user.fullName} avatar",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
-                    onError = {
-                        // On error, the Box background and fallback icon will show
+                    onLoading = {
+                        if (enableDebugLogging) {
+                            println("⏳ [MentionAvatar] Loading started for ${user.fullName}")
+                        }
+                    },
+                    onSuccess = { result ->
+                        if (enableDebugLogging) {
+                            println("✅ [MentionAvatar] Image loaded successfully for ${user.fullName}")
+                            println("📏 [MentionAvatar] Image size: ${result.painter.intrinsicSize}")
+                        }
+                    },
+                    onError = { error ->
+                        if (enableDebugLogging) {
+                            println("❌ [MentionAvatar] Image failed to load for ${user.fullName}")
+                            println("🔗 [MentionAvatar] Failed URL: ${user.imageUrl}")
+                            println("💥 [MentionAvatar] Error result: ${error.result}")
+                            println("🚨 [MentionAvatar] Error throwable: ${error.result.throwable}")
+                            
+                            // Additional debugging info
+                            when (val result = error.result) {
+                                is coil3.request.ErrorResult -> {
+                                    println("🔍 [MentionAvatar] Error type: ${result.throwable?.javaClass?.simpleName}")
+                                    println("📝 [MentionAvatar] Error message: ${result.throwable?.message}")
+                                }
+                            }
+                        }
                     }
                 )
+            } else {
+                if (enableDebugLogging) {
+                    println("🚫 [MentionAvatar] No image URL provided for ${user.fullName}")
+                }
             }
             
             // Always show the fallback icon, it will be covered by the image if it loads successfully

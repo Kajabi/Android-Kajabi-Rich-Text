@@ -8,6 +8,7 @@ package com.kjcommunities
  * - Automatic positioning of mention dropdown
  * - Insertion of mentions when users are selected
  * - Proper handling of text replacement and cursor positioning
+ * - Optional debug logging for troubleshooting
  * 
  * Usage:
  * ```
@@ -15,9 +16,18 @@ package com.kjcommunities
  *     state = richTextState,
  *     users = mentionUsers,
  *     placeholder = { Text("Type a message...") },
+ *     enableDebugLogging = true, // Enable for debugging image loading issues
  *     modifier = Modifier.fillMaxWidth()
  * )
  * ```
+ * 
+ * @param state The RichTextState that manages the editor content
+ * @param users List of MentionUser objects that can be mentioned
+ * @param modifier Modifier for the component
+ * @param placeholder Optional placeholder composable when text is empty
+ * @param colors Color configuration for the editor
+ * @param textStyle Text styling for the editor
+ * @param enableDebugLogging When true, prints detailed logs to help debug @ mention and image loading issues
  */
 
 import androidx.compose.foundation.layout.*
@@ -52,7 +62,8 @@ fun KJRichTextEditorWithMentions(
     modifier: Modifier = Modifier,
     placeholder: @Composable (() -> Unit)? = null,
     colors: RichTextEditorColors = RichTextEditorDefaults.richTextEditorColors(),
-    textStyle: androidx.compose.ui.text.TextStyle = androidx.compose.ui.text.TextStyle.Default
+    textStyle: androidx.compose.ui.text.TextStyle = androidx.compose.ui.text.TextStyle.Default,
+    enableDebugLogging: Boolean = false
 ) {
     var showMentionDropdown by remember { mutableStateOf(false) }
     var mentionSearchText by remember { mutableStateOf("") }
@@ -68,6 +79,13 @@ fun KJRichTextEditorWithMentions(
         val text = state.annotatedString.text
         val cursorPosition = state.selection.end
 
+        if (enableDebugLogging) {
+            println("🔍 [MentionDetect] Text changed or cursor moved")
+            println("📝 [MentionDetect] Current text: '$text'")
+            println("🎯 [MentionDetect] Cursor position: $cursorPosition")
+            println("🔍 [MentionDetect] Is focused: $isFocused")
+        }
+
         if (isFocused && cursorPosition > 0) {
             // Find the last @ symbol before the cursor
             var atIndex = -1
@@ -82,32 +100,56 @@ fun KJRichTextEditorWithMentions(
                 }
             }
 
+            if (enableDebugLogging) {
+                println("📍 [MentionDetect] Found @ at index: $atIndex")
+            }
+
             if (atIndex != -1) {
                 // Extract text after @ symbol
                 val searchText = text.substring(atIndex + 1, cursorPosition)
                 
+                if (enableDebugLogging) {
+                    println("🔤 [MentionDetect] Search text: '$searchText'")
+                }
+                
                 // Check if the search text is valid (no spaces or newlines)
                 if (!searchText.contains(' ') && !searchText.contains('\n')) {
+                    if (enableDebugLogging) {
+                        println("✅ [MentionDetect] Valid search text - showing dropdown")
+                    }
                     mentionSearchText = searchText
                     mentionStartIndex = atIndex
                     showMentionDropdown = true
                 } else {
+                    if (enableDebugLogging) {
+                        println("❌ [MentionDetect] Invalid search text (contains spaces/newlines) - hiding dropdown")
+                    }
                     showMentionDropdown = false
                 }
             } else {
+                if (enableDebugLogging) {
+                    println("🚫 [MentionDetect] No @ symbol found - hiding dropdown")
+                }
                 showMentionDropdown = false
             }
         } else {
+            if (enableDebugLogging) {
+                println("🔒 [MentionDetect] Not focused or cursor at start - hiding dropdown")
+            }
             showMentionDropdown = false
+        }
+        
+        if (enableDebugLogging) {
+            println("👁️ [MentionDetect] Dropdown visible: $showMentionDropdown")
         }
     }
 
     Box(modifier = modifier) {
         RichTextEditor(
             state = state,
-            placeholder = placeholder,
             colors = colors,
             textStyle = textStyle,
+            placeholder = placeholder,
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged { focusState ->
@@ -124,20 +166,19 @@ fun KJRichTextEditorWithMentions(
 
         // Mention dropdown popup
         if (showMentionDropdown && mentionSearchText.isNotEmpty()) {
-            // Calculate safe positioning for the dropdown
-            val dropdownMaxHeight = with(density) { 300.dp.roundToPx() }
-            val topMargin = with(density) { 80.dp.roundToPx() } // Account for TopAppBar + margin
-            val availableSpaceAbove = editorPosition.y.toInt() - topMargin
-            
-            // Use available space above, but ensure we don't exceed the dropdown's max height
-            val dropdownOffset = if (availableSpaceAbove >= dropdownMaxHeight) {
-                // Enough space - position dropdown at its full height above the editor
-                -dropdownMaxHeight - with(density) { 8.dp.roundToPx() }
+            val screenHeight = with(density) { configuration.screenHeightDp.dp.toPx() }
+            val dropdownHeight = 300.dp
+            val dropdownHeightPx = with(density) { dropdownHeight.toPx() }
+            val availableSpaceAbove = editorPosition.y
+            val availableSpaceBelow = screenHeight - editorPosition.y - editorHeight
+
+            // Position dropdown above the editor if there's more space there
+            val dropdownOffset = if (availableSpaceAbove > dropdownHeightPx && availableSpaceAbove > availableSpaceBelow) {
+                -(dropdownHeightPx.toInt() + 8) // 8dp margin
             } else {
-                // Limited space - position dropdown to use all available space above
-                -availableSpaceAbove + with(density) { 8.dp.roundToPx() }
+                editorHeight + with(density) { 8.dp.toPx().toInt() } // 8dp margin
             }
-            
+
             Popup(
                 offset = IntOffset(
                     x = 0,
@@ -158,8 +199,9 @@ fun KJRichTextEditorWithMentions(
                     maxHeight = with(density) { 
                         minOf(300.dp, availableSpaceAbove.toDp()).coerceAtLeast(100.dp)
                     },
+                    enableDebugLogging = enableDebugLogging,
                     onUserSelected = { user ->
-                        insertMention(state, user, mentionStartIndex, mentionStartIndex + mentionSearchText.length + 1)
+                        insertMention(state, user, mentionStartIndex, mentionStartIndex + mentionSearchText.length + 1, enableDebugLogging)
                         showMentionDropdown = false
                     },
                     onDismiss = { 
@@ -178,23 +220,61 @@ private fun insertMention(
     state: RichTextState,
     user: MentionUser,
     startIndex: Int,
-    endIndex: Int
+    endIndex: Int,
+    enableDebugLogging: Boolean = false
 ) {
-    // Create the mention span style
-    val mentionSpanStyle = RichSpanStyle.Mention(
-        id = user.id,
-        fullName = user.fullName,
-        alphaName = RichSpanStyle.Mention.globalAlphaName
-    )
+    if (enableDebugLogging) {
+        println("🏷️ [MentionInsert] Starting mention insertion for user: ${user.fullName}")
+        println("📍 [MentionInsert] User ID: ${user.id}")
+        println("🖼️ [MentionInsert] User image URL: ${user.imageUrl}")
+        println("📝 [MentionInsert] Text range: $startIndex to $endIndex")
+        println("⚡ [MentionInsert] Current text length: ${state.annotatedString.text.length}")
+    }
+    
+    try {
+        // Create the mention span style
+        val mentionSpanStyle = RichSpanStyle.Mention(
+            id = user.id,
+            fullName = user.fullName,
+            alphaName = RichSpanStyle.Mention.globalAlphaName
+        )
+        
+        if (enableDebugLogging) {
+            println("🎨 [MentionInsert] Created mention span style with alphaName: ${RichSpanStyle.Mention.globalAlphaName}")
+        }
 
-    // Replace the @ search text with the mention text + space
-    val mentionText = "@${user.fullName}"
-    val textRange = TextRange(startIndex, endIndex.coerceAtMost(state.annotatedString.text.length))
-    
-    // Replace the text first with mention + space
-    state.replaceTextRange(textRange, "$mentionText ")
-    
-    // Apply the mention style to the newly inserted mention text (excluding the space)
-    val newTextRange = TextRange(startIndex, startIndex + mentionText.length)
-    state.addRichSpan(mentionSpanStyle, newTextRange)
+        // Replace the @ search text with the mention text + space
+        val mentionText = "@${user.fullName}"
+        val textRange = TextRange(startIndex, endIndex.coerceAtMost(state.annotatedString.text.length))
+        
+        if (enableDebugLogging) {
+            println("🔄 [MentionInsert] Replacing text range $textRange with: '$mentionText '")
+        }
+        
+        // Replace the text first with mention + space
+        state.replaceTextRange(textRange, "$mentionText ")
+        
+        if (enableDebugLogging) {
+            println("✅ [MentionInsert] Text replaced successfully")
+        }
+        
+        // Apply the mention style to the newly inserted mention text (excluding the space)
+        val newTextRange = TextRange(startIndex, startIndex + mentionText.length)
+        if (enableDebugLogging) {
+            println("🎯 [MentionInsert] Applying mention style to range: $newTextRange")
+        }
+        
+        state.addRichSpan(mentionSpanStyle, newTextRange)
+        
+        if (enableDebugLogging) {
+            println("🎉 [MentionInsert] Mention insertion completed successfully!")
+        }
+        
+    } catch (e: Exception) {
+        if (enableDebugLogging) {
+            println("💥 [MentionInsert] Error during mention insertion: ${e.message}")
+            println("🔍 [MentionInsert] Exception type: ${e.javaClass.simpleName}")
+            e.printStackTrace()
+        }
+    }
 } 

@@ -128,6 +128,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 "list" -> parseListNode(jsonString)
                 "listitem" -> parseListItemNode(jsonString)
                 "mention" -> parseMentionNode(jsonString)
+                "linebreak" -> parseLineBreakNode(jsonString)
                 else -> null
             }
         } catch (e: Exception) {
@@ -143,6 +144,13 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             style = extractStringField(jsonString, "style") ?: "",
             text = extractStringField(jsonString, "text") ?: "",
             type = "text",
+            version = extractIntField(jsonString, "version") ?: 1
+        )
+    }
+
+    private fun parseLineBreakNode(jsonString: String): LexicalLineBreakNode {
+        return LexicalLineBreakNode(
+            type = "linebreak",
             version = extractIntField(jsonString, "version") ?: 1
         )
     }
@@ -321,17 +329,15 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
     private fun convertLexicalNodeToRichParagraph(node: LexicalNode): List<RichParagraph> {
         return when (node) {
             is LexicalParagraphNode -> {
-                val richParagraph = RichParagraph()
-                richParagraph.children.addAll(convertLexicalNodesToRichSpans(node.children, richParagraph))
-                listOf(richParagraph)
+                // Handle paragraph nodes with potential linebreaks inside
+                convertParagraphWithLineBreaks(node.children)
             }
             
             is LexicalHeadingNode -> {
-                // Convert headings to styled paragraphs
-                val richParagraph = RichParagraph()
-                val spans = convertLexicalNodesToRichSpans(node.children, richParagraph)
+                // Convert headings to styled paragraphs (linebreaks in headings also create new paragraphs)
+                val paragraphs = convertParagraphWithLineBreaks(node.children)
                 
-                // Apply heading styles to all spans
+                // Apply heading styles to all paragraphs
                 val headingStyle = when (node.tag) {
                     "h1" -> H1SpanStyle
                     "h2" -> H2SpanStyle
@@ -339,13 +345,14 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 }
                 
                 if (headingStyle != null) {
-                    spans.forEach { span ->
-                        span.spanStyle = span.spanStyle.merge(headingStyle)
+                    paragraphs.forEach { richParagraph ->
+                        richParagraph.children.forEach { span ->
+                            span.spanStyle = span.spanStyle.merge(headingStyle)
+                        }
                     }
                 }
                 
-                richParagraph.children.addAll(spans)
-                listOf(richParagraph)
+                paragraphs
             }
             
             is LexicalListNode -> {
@@ -355,16 +362,17 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 fun collectListItems(listNode: LexicalListNode): List<Pair<LexicalListItemNode, String>> {
                     val items = mutableListOf<Pair<LexicalListItemNode, String>>()
                     
-                    listNode.children.fastForEach { child ->
-                        if (child is LexicalListItemNode) {
-                            // Add this list item with its parent list type
-                            items.add(Pair(child, listNode.listType))
-                            
-                            // Recursively collect nested list items
-                            child.children.fastForEach { grandChild ->
-                                if (grandChild is LexicalListNode) {
-                                    items.addAll(collectListItems(grandChild))
-                                }
+                    listNode.children.forEach { child ->
+                        when (child) {
+                            is LexicalListItemNode -> {
+                                items.add(child to listNode.listType)
+                            }
+                            is LexicalListNode -> {
+                                // Recursively handle nested lists
+                                items.addAll(collectListItems(child))
+                            }
+                            else -> {
+                                // Skip other node types in list contexts
                             }
                         }
                     }
@@ -372,20 +380,22 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                     return items
                 }
                 
-                val allListItems = collectListItems(node)
+                val listItems = collectListItems(node)
                 
-                allListItems.fastForEach { (listItem, listType) ->
-                    // Create paragraphs for list items that have any content (text, mentions, etc.)
-                    if (listItem.children.isNotEmpty()) {
-                        val richParagraph = RichParagraph()
-                        // Convert 0-based indent to 1-based level (add 1)
-                        val level = listItem.indent + 1
-                        richParagraph.type = when (listType) {
-                            "number" -> OrderedList(number = listItem.value, initialLevel = level)
-                            else -> UnorderedList(initialLevel = level)
+                listItems.forEach { (listItem, listType) ->
+                    val paragraphType = if (listType == "bullet") {
+                        UnorderedList()
+                    } else {
+                        OrderedList(number = listItem.value)
+                    }
+                    
+                    // Handle linebreaks within list items by creating multiple paragraphs
+                    val itemParagraphs = convertParagraphWithLineBreaks(listItem.children)
+                    itemParagraphs.forEachIndexed { index, richParagraph ->
+                        // Only the first paragraph of each list item gets the list type
+                        if (index == 0) {
+                            richParagraph.type = paragraphType
                         }
-                        // Convert all children (text, mentions, etc.) to rich spans
-                        richParagraph.children.addAll(convertLexicalNodesToRichSpans(listItem.children, richParagraph))
                         paragraphs.add(richParagraph)
                     }
                 }
@@ -397,6 +407,43 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 // Convert unknown nodes to simple paragraphs
                 val richParagraph = RichParagraph()
                 listOf(richParagraph)
+            }
+        }
+    }
+
+    /**
+     * Converts a list of lexical nodes to RichParagraphs, splitting on linebreak nodes
+     */
+    @OptIn(ExperimentalRichTextApi::class)
+    private fun convertParagraphWithLineBreaks(nodes: List<LexicalNode>): List<RichParagraph> {
+        val paragraphs = mutableListOf<RichParagraph>()
+        var currentParagraph = RichParagraph()
+        
+        nodes.forEach { node ->
+            when (node) {
+                is LexicalLineBreakNode -> {
+                    // Linebreak creates a new paragraph
+                    paragraphs.add(currentParagraph)
+                    currentParagraph = RichParagraph()
+                }
+                else -> {
+                    // Convert node to spans and add to current paragraph
+                    val spans = convertLexicalNodeToRichSpans(node, currentParagraph)
+                    currentParagraph.children.addAll(spans)
+                }
+            }
+        }
+        
+        // Add the final paragraph
+        paragraphs.add(currentParagraph)
+        
+        // If we only have one paragraph and it's empty, return it anyway
+        // If we have multiple paragraphs, remove empty ones except the first and last
+        return if (paragraphs.size == 1) {
+            paragraphs
+        } else {
+            paragraphs.filterIndexed { index, paragraph ->
+                index == 0 || index == paragraphs.size - 1 || paragraph.children.isNotEmpty()
             }
         }
     }
@@ -462,6 +509,9 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             
             // Skip list nodes when converting to spans - they should be handled at paragraph level
             is LexicalListNode -> emptyList()
+            
+            // Skip linebreak nodes when converting to spans - they should be handled at paragraph level
+            is LexicalLineBreakNode -> emptyList()
             
             else -> {
                 listOf(RichSpan(paragraph = paragraph))
@@ -808,12 +858,34 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             // Handle regular text with formatting
             if (richSpan.text.isNotEmpty()) {
                 val formatFlags = calculateFormatFlags(richSpan.spanStyle)
-                nodes.add(
-                    LexicalTextNode(
-                        text = richSpan.text,
-                        formatFlags = formatFlags
+                
+                // Check if text contains newlines and split accordingly
+                if (richSpan.text.contains('\n')) {
+                    val parts = richSpan.text.split('\n')
+                    for (i in parts.indices) {
+                        // Add text node for non-empty parts
+                        if (parts[i].isNotEmpty()) {
+                            nodes.add(
+                                LexicalTextNode(
+                                    text = parts[i],
+                                    formatFlags = formatFlags
+                                )
+                            )
+                        }
+                        // Add linebreak node between parts (except after the last part)
+                        if (i < parts.size - 1) {
+                            nodes.add(LexicalLineBreakNode())
+                        }
+                    }
+                } else {
+                    // No newlines, handle as regular text node
+                    nodes.add(
+                        LexicalTextNode(
+                            text = richSpan.text,
+                            formatFlags = formatFlags
+                        )
                     )
-                )
+                }
             }
 
             // Handle children
@@ -974,6 +1046,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
             is LexicalListNode -> serializeListNodeToJson(node)
             is LexicalListItemNode -> serializeListItemNodeToJson(node)
             is LexicalMentionNode -> serializeMentionNodeToJson(node)
+            is LexicalLineBreakNode -> serializeLineBreakNodeToJson(node)
         }
     }
 
@@ -985,6 +1058,15 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
         jsonBuilder.append("\"mode\":\"${node.mode}\",")
         jsonBuilder.append("\"style\":\"${node.style}\",")
         jsonBuilder.append("\"text\":\"${escapeJsonString(node.text)}\",")
+        jsonBuilder.append("\"type\":\"${node.type}\",")
+        jsonBuilder.append("\"version\":${node.version}")
+        jsonBuilder.append("}")
+        return jsonBuilder.toString()
+    }
+
+    private fun serializeLineBreakNodeToJson(node: LexicalLineBreakNode): String {
+        val jsonBuilder = StringBuilder()
+        jsonBuilder.append("{")
         jsonBuilder.append("\"type\":\"${node.type}\",")
         jsonBuilder.append("\"version\":${node.version}")
         jsonBuilder.append("}")

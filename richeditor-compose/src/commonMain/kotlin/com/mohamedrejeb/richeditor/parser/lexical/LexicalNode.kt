@@ -134,4 +134,15 @@ public data class LexicalMentionNode(
     override val direction: String = "ltr",
     override val format: String = "",
     override val indent: Int = 0
+) : LexicalNode
+
+/**
+ * Represents a line break node
+ */
+public data class LexicalLineBreakNode(
+    override val type: String = "linebreak",
+    override val version: Int = 1,
+    override val direction: String = "ltr",
+    override val format: String = "",
+    override val indent: Int = 0
 ) : LexicalNode 
