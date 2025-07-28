@@ -40,6 +40,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -61,6 +62,7 @@ import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.unit.sp
 
 /**
  * User data model for mentions
@@ -84,6 +86,9 @@ fun KJDemoScreen(
     }
 
     val openLinkDialog = remember { mutableStateOf(false) }
+    
+    // Debug logging toggle for demonstration
+    var enableDebugLogging by remember { mutableStateOf(false) }
 
     // Sample mention users from adding_at_mentions_support.md (Replace with your own users)
     val mentionUsers = remember {
@@ -171,6 +176,32 @@ fun KJDemoScreen(
                                 Icon(
                                     Icons.Outlined.PlayArrow,
                                     contentDescription = "Send Sample Mentions",
+                                    tint = Color.White
+                                )
+                            }
+                            
+                            IconButton(
+                                onClick = {
+                                    // Create a new RichTextState with test data 2 and add it as a sent message
+                                    val testDataMessageState = RichTextState()
+                                    // Apply the same configuration as the main state
+                                    testDataMessageState.config.linkColor = Color(0xFF00C851)
+                                    testDataMessageState.config.linkTextDecoration = TextDecoration.None
+                                    testDataMessageState.config.codeSpanColor = Color(0xFFd7882d)
+                                    testDataMessageState.config.codeSpanBackgroundColor = Color.Transparent
+                                    testDataMessageState.config.codeSpanStrokeColor = Color(0xFF494b4d)
+                                    testDataMessageState.config.unorderedListIndent = 40
+                                    testDataMessageState.config.orderedListIndent = 50
+                                    testDataMessageState.config.mentionColor = Color(0xFF0084ff)
+                                    testDataMessageState.config.mentionTextDecoration = TextDecoration.None
+                                    // Set the lexical text from test data 2
+                                    testDataMessageState.setLexicalText(LexicalTestData.getMinifiedTestJson2())
+                                    messages.add(testDataMessageState)
+                                }
+                            ) {
+                                Icon(
+                                    Icons.Outlined.Settings,
+                                    contentDescription = "Send Test Data 2",
                                     tint = Color.White
                                 )
                             }
@@ -274,9 +305,37 @@ fun KJDemoScreen(
                                 .padding(horizontal = 20.dp)
                         )
 
+                        // Debug logging toggle
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp)
+                                .padding(bottom = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Debug Logging",
+                                color = Color(0xFFCBCCCD),
+                                fontSize = 12.sp
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Switch(
+                                checked = enableDebugLogging,
+                                onCheckedChange = { enableDebugLogging = it },
+                                colors = SwitchDefaults.colors(
+                                    checkedThumbColor = Color(0xFF007a5a),
+                                    checkedTrackColor = Color(0xFF007a5a).copy(alpha = 0.3f),
+                                    uncheckedThumbColor = Color(0xFF8e9297),
+                                    uncheckedTrackColor = Color(0xFF404449)
+                                ),
+                                modifier = Modifier.scale(0.8f)
+                            )
+                        }
+
                         KJRichTextEditorWithMentions(
                             state = richTextState,
                             users = mentionUsers,
+                            enableDebugLogging = enableDebugLogging,
                             placeholder = {
                                 Text(
                                     text = "Message #compose-rich-text-editor",

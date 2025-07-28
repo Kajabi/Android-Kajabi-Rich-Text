@@ -67,6 +67,9 @@ kotlin {
 
         // Navigation
         implementation(libs.navigation.compose)
+        
+        // Kotlinx Serialization for JSON pretty printing
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     }
 
     sourceSets.androidMain.dependencies {
