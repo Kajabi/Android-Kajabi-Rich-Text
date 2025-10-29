@@ -75,6 +75,7 @@ import kotlin.math.max
 import kotlin.reflect.KClass
 import com.mohamedrejeb.richeditor.parser.utils.H1SpanStyle
 import com.mohamedrejeb.richeditor.parser.utils.H2SpanStyle
+import com.mohamedrejeb.richeditor.parser.utils.H3SpanStyle
 
 /**
  * rememberRichTextState - Creates and remembers a RichTextState instance with automatic state preservation.
@@ -299,6 +300,8 @@ public class RichTextState internal constructor(
     public var isH1: Boolean by mutableStateOf(false)
         private set
     public var isH2: Boolean by mutableStateOf(false)
+        private set
+    public var isH3: Boolean by mutableStateOf(false)
         private set
 
     public val config: RichTextConfig = RichTextConfig(
@@ -4376,5 +4379,7 @@ public class RichTextState internal constructor(
                currentStyle.fontWeight == H1SpanStyle.fontWeight
         isH2 = currentStyle.fontSize == H2SpanStyle.fontSize && 
                currentStyle.fontWeight == H2SpanStyle.fontWeight
+        isH3 = currentStyle.fontSize == H3SpanStyle.fontSize && 
+               currentStyle.fontWeight == H3SpanStyle.fontWeight
     }
 }

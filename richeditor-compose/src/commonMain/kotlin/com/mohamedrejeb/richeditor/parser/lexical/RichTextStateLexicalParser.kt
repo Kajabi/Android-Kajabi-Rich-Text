@@ -13,6 +13,7 @@ import com.mohamedrejeb.richeditor.paragraph.type.*
 import com.mohamedrejeb.richeditor.parser.RichTextStateParser
 import com.mohamedrejeb.richeditor.parser.utils.H1SpanStyle
 import com.mohamedrejeb.richeditor.parser.utils.H2SpanStyle
+import com.mohamedrejeb.richeditor.parser.utils.H3SpanStyle
 import androidx.compose.ui.util.fastForEach
 
 internal object RichTextStateLexicalParser : RichTextStateParser<String> {
@@ -341,6 +342,7 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                 val headingStyle = when (node.tag) {
                     "h1" -> H1SpanStyle
                     "h2" -> H2SpanStyle
+                    "h3" -> H3SpanStyle
                     else -> null
                 }
                 
@@ -950,6 +952,9 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
                     
                     spanStyle.fontSize == H2SpanStyle.fontSize && 
                     spanStyle.fontWeight == H2SpanStyle.fontWeight -> "h2"
+                    
+                    spanStyle.fontSize == H3SpanStyle.fontSize && 
+                    spanStyle.fontWeight == H3SpanStyle.fontWeight -> "h3"
                     
                     else -> null
                 }
