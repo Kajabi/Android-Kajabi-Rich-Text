@@ -17,6 +17,10 @@ object LexicalTestData {
     private var cachedMinifiedJson2: String? = null
     private var cachedPrettyJson2: String? = null
     
+    // Separate cache for test data 3
+    private var cachedMinifiedJson3: String? = null
+    private var cachedPrettyJson3: String? = null
+    
     @OptIn(ExperimentalResourceApi::class)
     private suspend fun loadTestData(): Pair<String, String> {
         if (cachedMinifiedJson == null || cachedPrettyJson == null) {
@@ -60,6 +64,40 @@ object LexicalTestData {
         return Pair(cachedMinifiedJson2!!, cachedPrettyJson2!!)
     }
     
+    @OptIn(ExperimentalResourceApi::class)
+    private suspend fun loadTestData3(): Pair<String, String> {
+        if (cachedMinifiedJson3 == null || cachedPrettyJson3 == null) {
+            val jsonString = Res.readBytes("files/lexical_test_data3.json").decodeToString()
+            
+            // Extract the minified JSON - find the closing pattern }" that ends the value
+            val minifiedStart = jsonString.indexOf("\"minified_test_json\": \"") + "\"minified_test_json\": \"".length
+            // Look for the pattern that ends the JSON value (}" followed by optional whitespace and closing brace)
+            val minifiedEnd = jsonString.lastIndexOf("}\"")
+            if (minifiedEnd > minifiedStart) {
+                cachedMinifiedJson3 = jsonString.substring(minifiedStart, minifiedEnd + 1)
+                    .replace("\\\"", "\"")
+                    .replace("\\\\", "\\")
+            } else {
+                // Fallback: just get everything between the quotes
+                cachedMinifiedJson3 = jsonString.substring(minifiedStart, jsonString.length - 3)
+                    .replace("\\\"", "\"")
+                    .replace("\\\\", "\\")
+            }
+            
+            // Create a pretty-printed version using kotlinx.serialization
+            try {
+                val json = Json { prettyPrint = true }
+                val jsonElement = Json.parseToJsonElement(cachedMinifiedJson3!!)
+                cachedPrettyJson3 = json.encodeToString(kotlinx.serialization.json.JsonElement.serializer(), jsonElement)
+            } catch (e: Exception) {
+                // If pretty printing fails, use the minified version
+                cachedPrettyJson3 = cachedMinifiedJson3
+                println("Error parsing test data 3: ${e.message}")
+            }
+        }
+        return Pair(cachedMinifiedJson3!!, cachedPrettyJson3!!)
+    }
+    
 
     /**
      * Get the minified test JSON string
@@ -94,6 +132,24 @@ object LexicalTestData {
     fun getPrettyTestJson2(): String {
         return runBlocking {
             loadTestData2().second
+        }
+    }
+    
+    /**
+     * Get the minified test JSON string from data set 3
+     */
+    fun getMinifiedTestJson3(): String {
+        return runBlocking {
+            loadTestData3().first
+        }
+    }
+    
+    /**
+     * Get the pretty-formatted test JSON string from data set 3
+     */
+    fun getPrettyTestJson3(): String {
+        return runBlocking {
+            loadTestData3().second
         }
     }
 } 

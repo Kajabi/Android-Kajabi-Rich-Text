@@ -49,6 +49,8 @@ package com.mohamedrejeb.richeditor.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.paragraph.type.OrderedListStyleType
 import com.mohamedrejeb.richeditor.paragraph.type.UnorderedListStyleType
 
@@ -174,6 +176,42 @@ public class RichTextConfig internal constructor(
      * Default is `true`.
      */
     public var exitListOnEmptyItem: Boolean = true
+
+    /**
+     * Line height for H1 headings.
+     * Controls the vertical spacing within and around H1 headings.
+     * 
+     * Default is `TextUnit.Unspecified` which uses the default line height.
+     */
+    public var h1LineHeight: TextUnit = TextUnit.Unspecified
+        set(value) {
+            field = value
+            updateText()
+        }
+
+    /**
+     * Line height for H2 headings.
+     * Controls the vertical spacing within and around H2 headings.
+     * 
+     * Default is `TextUnit.Unspecified` which uses the default line height.
+     */
+    public var h2LineHeight: TextUnit = TextUnit.Unspecified
+        set(value) {
+            field = value
+            updateText()
+        }
+
+    /**
+     * Line height for H3 headings.
+     * Controls the vertical spacing within and around H3 headings.
+     * 
+     * Default is `TextUnit.Unspecified` which uses the default line height.
+     */
+    public var h3LineHeight: TextUnit = TextUnit.Unspecified
+        set(value) {
+            field = value
+            updateText()
+        }
 }
 
 internal const val DefaultListIndent = 38

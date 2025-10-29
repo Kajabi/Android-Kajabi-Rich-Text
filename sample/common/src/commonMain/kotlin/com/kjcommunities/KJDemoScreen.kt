@@ -133,6 +133,10 @@ fun KJDemoScreen(
         // Configure mention styling
         richTextState.config.mentionColor = Color(0xFF0084ff) // Blue color for mentions
         richTextState.config.mentionTextDecoration = TextDecoration.None
+        // Configure heading line heights for better spacing
+        richTextState.config.h1LineHeight = 48.sp
+        richTextState.config.h2LineHeight = 36.sp
+        richTextState.config.h3LineHeight = 28.sp
     }
 
     Box(
@@ -156,26 +160,29 @@ fun KJDemoScreen(
                         actions = {
                             IconButton(
                                 onClick = {
-                                    // Create a new RichTextState with the sample data and add it as a sent message
-                                    val sampleMessageState = RichTextState()
+                                    // Create a new RichTextState with test data 3 and add it as a sent message
+                                    val testData3MessageState = RichTextState()
                                     // Apply the same configuration as the main state
-                                    sampleMessageState.config.linkColor = Color(0xFF00C851)
-                                    sampleMessageState.config.linkTextDecoration = TextDecoration.None
-                                    sampleMessageState.config.codeSpanColor = Color(0xFFd7882d)
-                                    sampleMessageState.config.codeSpanBackgroundColor = Color.Transparent
-                                    sampleMessageState.config.codeSpanStrokeColor = Color(0xFF494b4d)
-                                    sampleMessageState.config.unorderedListIndent = 40
-                                    sampleMessageState.config.orderedListIndent = 50
-                                    sampleMessageState.config.mentionColor = Color(0xFF0084ff)
-                                    sampleMessageState.config.mentionTextDecoration = TextDecoration.None
-                                    // Set the lexical text
-                                    sampleMessageState.setLexicalText(sampleMentionData)
-                                    messages.add(sampleMessageState)
+                                    testData3MessageState.config.linkColor = Color(0xFF00C851)
+                                    testData3MessageState.config.linkTextDecoration = TextDecoration.None
+                                    testData3MessageState.config.codeSpanColor = Color(0xFFd7882d)
+                                    testData3MessageState.config.codeSpanBackgroundColor = Color.Transparent
+                                    testData3MessageState.config.codeSpanStrokeColor = Color(0xFF494b4d)
+                                    testData3MessageState.config.unorderedListIndent = 40
+                                    testData3MessageState.config.orderedListIndent = 50
+                                    testData3MessageState.config.mentionColor = Color(0xFF0084ff)
+                                    testData3MessageState.config.mentionTextDecoration = TextDecoration.None
+                                    testData3MessageState.config.h1LineHeight = 48.sp
+                                    testData3MessageState.config.h2LineHeight = 36.sp
+                                    testData3MessageState.config.h3LineHeight = 28.sp
+                                    // Set the lexical text from test data 3
+                                    testData3MessageState.setLexicalText(LexicalTestData.getMinifiedTestJson3())
+                                    messages.add(testData3MessageState)
                                 }
                             ) {
                                 Icon(
                                     Icons.Outlined.PlayArrow,
-                                    contentDescription = "Send Sample Mentions",
+                                    contentDescription = "Send Test Data 3",
                                     tint = Color.White
                                 )
                             }
@@ -194,6 +201,9 @@ fun KJDemoScreen(
                                     testDataMessageState.config.orderedListIndent = 50
                                     testDataMessageState.config.mentionColor = Color(0xFF0084ff)
                                     testDataMessageState.config.mentionTextDecoration = TextDecoration.None
+                                    testDataMessageState.config.h1LineHeight = 48.sp
+                                    testDataMessageState.config.h2LineHeight = 36.sp
+                                    testDataMessageState.config.h3LineHeight = 28.sp
                                     // Set the lexical text from test data 2
                                     testDataMessageState.setLexicalText(LexicalTestData.getMinifiedTestJson2())
                                     messages.add(testDataMessageState)
@@ -377,6 +387,9 @@ fun KJDemoScreen(
                                             messageState.config.orderedListIndent = 50
                                             messageState.config.mentionColor = Color(0xFF0084ff)
                                             messageState.config.mentionTextDecoration = TextDecoration.None
+                                            messageState.config.h1LineHeight = 48.sp
+                                            messageState.config.h2LineHeight = 36.sp
+                                            messageState.config.h3LineHeight = 28.sp
                                             messages.add(messageState)
                                             richTextState.clear()
                                         },

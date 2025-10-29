@@ -4290,6 +4290,34 @@ public class RichTextState internal constructor(
     public fun setLexicalText(lexicalJsonString: String): RichTextState {
         return try {
             val parsedState = RichTextStateLexicalParser.encode(lexicalJsonString)
+            
+            // Apply line heights from config to heading paragraphs
+            parsedState.richParagraphList.forEach { richParagraph ->
+                // Check if this paragraph contains a heading by looking at the first span's font size
+                val firstSpan = richParagraph.children.firstOrNull()
+                if (firstSpan != null) {
+                    val fontSize = firstSpan.spanStyle.fontSize
+                    
+                    // Check if this is a heading based on font size
+                    val lineHeight = when {
+                        // H1: 2em
+                        fontSize.value in 1.95f..2.05f && fontSize.isEm -> config.h1LineHeight
+                        // H2: 1.5em
+                        fontSize.value in 1.45f..1.55f && fontSize.isEm -> config.h2LineHeight
+                        // H3: 1.17em
+                        fontSize.value in 1.12f..1.22f && fontSize.isEm -> config.h3LineHeight
+                        else -> null
+                    }
+                    
+                    // Apply line height to the paragraph style if configured
+                    if (lineHeight != null && lineHeight != androidx.compose.ui.unit.TextUnit.Unspecified) {
+                        richParagraph.paragraphStyle = richParagraph.paragraphStyle.copy(
+                            lineHeight = lineHeight
+                        )
+                    }
+                }
+            }
+            
             updateRichParagraphList(parsedState.richParagraphList)
             this
         } catch (e: Exception) {
