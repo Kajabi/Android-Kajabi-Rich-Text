@@ -620,11 +620,11 @@ internal object RichTextStateLexicalParser : RichTextStateParser<String> {
         val patterns = listOf("\"$fieldName\":\"", "\"$fieldName\": \"")
         
         for (pattern in patterns) {
-            val startIndex = if (fieldName == "type") {
-                json.lastIndexOf(pattern)
-            } else {
-                json.indexOf(pattern)
-            }
+            // FIX: Always use indexOf (first occurrence) instead of lastIndexOf
+            // Using lastIndexOf for "type" causes wrong extraction when nodes have nested children
+            // Example: {"type":"paragraph","children":[{"type":"mention"}]} 
+            // Would incorrectly extract "mention" instead of "paragraph"
+            val startIndex = json.indexOf(pattern)
             
             if (startIndex != -1) {
                 val valueStart = startIndex + pattern.length
