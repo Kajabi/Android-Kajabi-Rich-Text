@@ -3395,7 +3395,8 @@ public class RichTextState internal constructor(
                 if (
                     textLayoutResult.multiParagraph.didExceedMaxLines &&
                     textLayoutResult.multiParagraph.maxLines > 0 &&
-                    textLayoutResult.multiParagraph.maxLines != Int.MAX_VALUE
+                    textLayoutResult.multiParagraph.maxLines != Int.MAX_VALUE &&
+                    textLayoutResult.lineCount > 0
                 ) {
                     val lastLineIndex = minOf(
                         textLayoutResult.multiParagraph.maxLines - 1,
