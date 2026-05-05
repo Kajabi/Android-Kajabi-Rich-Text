@@ -127,6 +127,17 @@ public fun rememberRichTextState(): RichTextState {
     }
 }
 
+private class BoundedOffsetMapping(
+    private val originalLength: Int,
+    private val transformedLength: Int,
+) : OffsetMapping {
+    override fun originalToTransformed(offset: Int): Int =
+        offset.coerceIn(0, transformedLength)
+
+    override fun transformedToOriginal(offset: Int): Int =
+        offset.coerceIn(0, originalLength)
+}
+
 @OptIn(ExperimentalRichTextApi::class)
 public class RichTextState internal constructor(
     initialRichParagraphList: List<RichParagraph>,
@@ -1742,10 +1753,12 @@ public class RichTextState internal constructor(
 
         styledRichSpanList.clear()
         textFieldValue = newTextFieldValue.copy(text = annotatedString.text)
+        val originalLength = textFieldValue.text.length
+        val transformedLength = annotatedString.text.length
         visualTransformation = VisualTransformation { _ ->
             TransformedText(
                 text = annotatedString,
-                offsetMapping = OffsetMapping.Identity
+                offsetMapping = BoundedOffsetMapping(originalLength, transformedLength)
             )
         }
         styledRichSpanList.addAll(newStyledRichSpanList)
@@ -4107,10 +4120,12 @@ public class RichTextState internal constructor(
             text = annotatedString.text,
             selection = TextRange(selectionIndex),
         )
+        val originalLength = textFieldValue.text.length
+        val transformedLength = annotatedString.text.length
         visualTransformation = VisualTransformation { _ ->
             TransformedText(
                 text = annotatedString,
-                offsetMapping = OffsetMapping.Identity
+                offsetMapping = BoundedOffsetMapping(originalLength, transformedLength)
             )
         }
         styledRichSpanList.addAll(newStyledRichSpanList)
