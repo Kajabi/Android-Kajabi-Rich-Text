@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -14,6 +15,13 @@ plugins {
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
+
+    // Keep published Kotlin metadata at 2.1 so consumers still on Kotlin 2.0.x can read it
+    // (the compiler reads one minor version ahead). Matches richeditor-compose.
+    compilerOptions {
+        languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        apiVersion.set(KotlinVersion.KOTLIN_2_1)
+    }
 
     androidTarget {
         publishLibraryVariants("release")
@@ -42,7 +50,6 @@ kotlin {
         }
     }
 
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
